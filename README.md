@@ -1,5 +1,4 @@
 # FI-MUNI-PV168 Agency Manager
-School project for JavaSE seminar
 Evidency of agents and missions 
 
 # Functionalities:
