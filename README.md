@@ -8,7 +8,7 @@ Evidency of agents and missions
 * deleting
 * assigning agent to mission
 * listing the demanded objects
-* 
+ 
 ## Team members:
 * Adam Baňanka
 * Daniel Homola
