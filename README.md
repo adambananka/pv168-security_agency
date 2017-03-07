@@ -1,5 +1,5 @@
 # FI-MUNI-PV168 Agency Manager
-School project Java PV168
+School project Java PV168 \n
 Registry of agents and missions 
 
 # Functionalities:
