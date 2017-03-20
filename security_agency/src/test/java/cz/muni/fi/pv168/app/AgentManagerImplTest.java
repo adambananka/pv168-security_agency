@@ -16,14 +16,14 @@ public class AgentManagerImplTest {
 
     private AgentManagerImpl manager = new AgentManagerImpl();
 
-    private AgentBuilder sampleAgentBuilder1() {
+    private AgentBuilder supermanBuilder() {
         return new AgentBuilder()
                 .id(null)
                 .name("Superman")
                 .alive(true);
     }
 
-    private AgentBuilder sampleAgentBuilder2() {
+    private AgentBuilder jackSparrowBuilder() {
         return new AgentBuilder()
                 .id(null)
                 .name("JackSparrow")
@@ -32,7 +32,7 @@ public class AgentManagerImplTest {
 
     @Test
     public void createAgent() {
-        Agent agent = sampleAgentBuilder1().build();
+        Agent agent = supermanBuilder().build();
         manager.createAgent(agent);
 
         Long agentId = agent.getId();
@@ -50,36 +50,36 @@ public class AgentManagerImplTest {
 
     @Test
     public void createAgentWithNullName() {
-        Agent agent = sampleAgentBuilder1()
+        Agent superman = supermanBuilder()
                 .name(null)
                 .build();
-        assertThatThrownBy(() -> manager.createAgent(agent))
+        assertThatThrownBy(() -> manager.createAgent(superman))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void createAgentWithExistingName() {
-        Agent agent1 = sampleAgentBuilder1().build();
-        manager.createAgent(agent1);
-        Agent agent2 = sampleAgentBuilder2()
+        Agent superman = supermanBuilder().build();
+        manager.createAgent(superman);
+        Agent jackSparrow = jackSparrowBuilder()
                 .name("Superman")
                 .build();
-        assertThatThrownBy(() -> manager.createAgent(agent2)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> manager.createAgent(jackSparrow)).isInstanceOf(IllegalArgumentException.class);
     }
 
     private void updateAgent(Consumer<Agent> updateOperation) {
-        Agent mainAgent = sampleAgentBuilder1().build();
-        Agent anotherAgent = sampleAgentBuilder2().build();
-        manager.createAgent(mainAgent);
-        manager.createAgent(anotherAgent);
+        Agent superman = supermanBuilder().build();
+        Agent jackSparrow = jackSparrowBuilder().build();
+        manager.createAgent(superman);
+        manager.createAgent(jackSparrow);
 
-        updateOperation.accept(mainAgent);
+        updateOperation.accept(superman);
 
-        manager.updateAgent(mainAgent);
-        assertThat(manager.findAgent(mainAgent.getId()))
-                .isEqualToComparingFieldByField(mainAgent);
-        assertThat(manager.findAgent(anotherAgent.getId()))
-                .isEqualToComparingFieldByField(anotherAgent);
+        manager.updateAgent(superman);
+        assertThat(manager.findAgent(superman.getId()))
+                .isEqualToComparingFieldByField(superman);
+        assertThat(manager.findAgent(jackSparrow.getId()))
+                .isEqualToComparingFieldByField(jackSparrow);
     }
 
     @Test
@@ -99,7 +99,7 @@ public class AgentManagerImplTest {
 
     @Test
     public void updateAgentWithNullName() {
-        Agent agent = sampleAgentBuilder1().build();
+        Agent agent = supermanBuilder().build();
         manager.createAgent(agent);
         agent.setName(null);
         assertThatThrownBy(() -> manager.updateAgent(agent)).isInstanceOf(IllegalArgumentException.class);
@@ -107,8 +107,8 @@ public class AgentManagerImplTest {
 
     @Test
     public void updateAgentWithExistingName() {
-        Agent agent = sampleAgentBuilder1().build();
-        Agent anotherAgent = sampleAgentBuilder2().build();
+        Agent agent = supermanBuilder().build();
+        Agent anotherAgent = jackSparrowBuilder().build();
         manager.createAgent(agent);
         manager.createAgent(anotherAgent);
         agent.setName("JackSparrow");
@@ -118,18 +118,18 @@ public class AgentManagerImplTest {
     @Test
     public void deleteAgent() {
 
-        Agent agent1 = sampleAgentBuilder1().build();
-        Agent agent2 = sampleAgentBuilder2().build();
-        manager.createAgent(agent1);
-        manager.createAgent(agent2);
+        Agent superman = supermanBuilder().build();
+        Agent jackSparrow = jackSparrowBuilder().build();
+        manager.createAgent(superman);
+        manager.createAgent(jackSparrow);
 
-        assertThat(manager.findAgent(agent1.getId())).isNotNull();
-        assertThat(manager.findAgent(agent2.getId())).isNotNull();
+        assertThat(manager.findAgent(superman.getId())).isNotNull();
+        assertThat(manager.findAgent(jackSparrow.getId())).isNotNull();
 
-        manager.deleteAgent(agent1);
+        manager.deleteAgent(superman);
 
-        assertThat(manager.findAgent(agent1.getId())).isNull();
-        assertThat(manager.findAgent(agent2.getId())).isNotNull();
+        assertThat(manager.findAgent(superman.getId())).isNull();
+        assertThat(manager.findAgent(jackSparrow.getId())).isNotNull();
 
     }
 
@@ -143,15 +143,15 @@ public class AgentManagerImplTest {
 
         assertThat(manager.findAllAgents()).isEmpty();
 
-        Agent a1 = sampleAgentBuilder1().build();
-        Agent a2 = sampleAgentBuilder2().build();
+        Agent superman = supermanBuilder().build();
+        Agent jackSparrow = jackSparrowBuilder().build();
 
-        manager.createAgent(a1);
-        manager.createAgent(a2);
+        manager.createAgent(superman);
+        manager.createAgent(jackSparrow);
 
         assertThat(manager.findAllAgents())
                 .usingFieldByFieldElementComparator()
-                .containsOnly(a1,a2);
+                .containsOnly(superman,jackSparrow);
 
     }
 
