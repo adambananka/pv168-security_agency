@@ -21,7 +21,7 @@ public class MissionManagerImplTest {
                 .name("easy_mission")
                 .agent(null)
                 .status(MissionStatus.IN_PROGRESS)
-                .info("Really easy mission.");
+                .requiredRank(2);
     }
 
     private MissionBuilder sampleHardMissionBuilder() {
@@ -30,7 +30,7 @@ public class MissionManagerImplTest {
                 .name("hard_mission")
                 .agent(null)
                 .status(MissionStatus.FAILED)
-                .info("Really hard mission.");
+                .requiredRank(7);
     }
 
 
@@ -52,36 +52,48 @@ public class MissionManagerImplTest {
 
     @Test
     public void createMissionWithNullName() {
-        Mission mission = sampleEasyMissionBuilder().name(null).build();
-        assertThatThrownBy(() -> manager.createMission(mission)).isInstanceOf(IllegalArgumentException.class);
+        Mission easyMission = sampleEasyMissionBuilder().name(null).build();
+        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void createMissionWithEmptyName() {
+        Mission easyMission = sampleEasyMissionBuilder().name("").build();
+        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void createMissionWithExistingName() {
-        Mission mission1 = sampleEasyMissionBuilder().build();
-        manager.createMission(mission1);
-        Mission mission2 = sampleHardMissionBuilder().name("easy_mission").build();
-        assertThatThrownBy(() -> manager.createMission(mission2)).isInstanceOf(IllegalArgumentException.class);
+        Mission easyMission = sampleEasyMissionBuilder().build();
+        manager.createMission(easyMission);
+        Mission hardMission = sampleHardMissionBuilder().name("easy_mission").build();
+        assertThatThrownBy(() -> manager.createMission(hardMission)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    public void createMissionWithNullInfo() {
-        Mission mission = sampleEasyMissionBuilder().info(null).build();
-        assertThatThrownBy(() -> manager.createMission(mission)).isInstanceOf(IllegalArgumentException.class);
+    public void createMissionWithZeroRequiredRank() {
+        Mission easyMission = sampleEasyMissionBuilder().requiredRank(0).build();
+        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void createMissionWithNegativeRequiredRank() {
+        Mission easyMission = sampleEasyMissionBuilder().requiredRank(-1).build();
+        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(IllegalArgumentException.class);
     }
 
 
 
     private void updateMission(Consumer<Mission> updateOperation) {
-        Mission mainMission = sampleEasyMissionBuilder().build();
-        Mission anotherMission = sampleHardMissionBuilder().build();
-        manager.createMission(mainMission);
-        manager.createMission(anotherMission);
+        Mission easyMission = sampleEasyMissionBuilder().build();
+        Mission hardMission = sampleHardMissionBuilder().build();
+        manager.createMission(easyMission);
+        manager.createMission(hardMission);
 
-        updateOperation.accept(mainMission);
-        manager.updateMission(mainMission);
-        assertThat(manager.findMission(mainMission.getId())).isEqualToComparingFieldByField(mainMission);
-        assertThat(manager.findMission(anotherMission.getId())).isEqualToComparingFieldByField(anotherMission);
+        updateOperation.accept(easyMission);
+        manager.updateMission(easyMission);
+        assertThat(manager.findMission(easyMission.getId())).isEqualToComparingFieldByField(easyMission);
+        assertThat(manager.findMission(hardMission.getId())).isEqualToComparingFieldByField(hardMission);
     }
 
     @Test
@@ -95,8 +107,8 @@ public class MissionManagerImplTest {
     }
 
     @Test
-    public void updateMissionInfo() {
-        updateMission((mission) -> mission.setInfo("Main mission, not so easy."));
+    public void updateMissionRequiredRank() {
+        updateMission((mission) -> mission.setRequiredRank(5));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -106,51 +118,67 @@ public class MissionManagerImplTest {
 
     @Test
     public void updateMissionWithNullName() {
-        Mission mission = sampleEasyMissionBuilder().build();
-        manager.createMission(mission);
-        mission.setName(null);
-        assertThatThrownBy(() -> manager.updateMission(mission)).isInstanceOf(IllegalArgumentException.class);
+        Mission easyMission = sampleEasyMissionBuilder().build();
+        manager.createMission(easyMission);
+        easyMission.setName(null);
+        assertThatThrownBy(() -> manager.updateMission(easyMission)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void updateMissionWithEmptyName() {
+        Mission easyMission = sampleEasyMissionBuilder().build();
+        manager.createMission(easyMission);
+        easyMission.setName("");
+        assertThatThrownBy(() -> manager.updateMission(easyMission)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void updateMissionWithExistingName() {
-        Mission mission = sampleEasyMissionBuilder().build();
-        Mission anotherMission = sampleHardMissionBuilder().build();
-        manager.createMission(mission);
-        manager.createMission(anotherMission);
-        mission.setName("hard_mission");
-        assertThatThrownBy(() -> manager.updateMission(mission)).isInstanceOf(IllegalArgumentException.class);
+        Mission easyMission = sampleEasyMissionBuilder().build();
+        Mission hardMission = sampleHardMissionBuilder().build();
+        manager.createMission(easyMission);
+        manager.createMission(hardMission);
+        easyMission.setName("hard_mission");
+        assertThatThrownBy(() -> manager.updateMission(easyMission)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     public void updateMissionWithPreviousStatus() {
-        Mission mission = sampleHardMissionBuilder().build();
-        manager.createMission(mission);
-        mission.setStatus(MissionStatus.IN_PROGRESS);
-        assertThatThrownBy(() -> manager.updateMission(mission)).isInstanceOf(IllegalArgumentException.class);
+        Mission hardMission = sampleHardMissionBuilder().build();
+        manager.createMission(hardMission);
+        hardMission.setStatus(MissionStatus.IN_PROGRESS);
+        assertThatThrownBy(() -> manager.updateMission(hardMission)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    public void updateMissionWithNullInfo() {
-        Mission mission = sampleHardMissionBuilder().build();
-        manager.createMission(mission);
-        mission.setInfo(null);
-        assertThatThrownBy(() -> manager.updateMission(mission)).isInstanceOf(IllegalArgumentException.class);
+    public void updateMissionWithZeroRequiredRank() {
+        Mission hardMission = sampleHardMissionBuilder().build();
+        manager.createMission(hardMission);
+        hardMission.setRequiredRank(0);
+        assertThatThrownBy(() -> manager.updateMission(hardMission)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    public void updateMissionWithNegativeRequiredRank() {
+        Mission hardMission = sampleHardMissionBuilder().build();
+        manager.createMission(hardMission);
+        hardMission.setRequiredRank(-1);
+        assertThatThrownBy(() -> manager.updateMission(hardMission)).isInstanceOf(IllegalArgumentException.class);
     }
 
 
     @Test
     public void deleteMission() {
-        Mission mission1 = sampleEasyMissionBuilder().build();
-        Mission mission2 = sampleHardMissionBuilder().build();
-        manager.createMission(mission1);
-        manager.createMission(mission2);
+        Mission easyMission = sampleEasyMissionBuilder().build();
+        Mission hardMission = sampleHardMissionBuilder().build();
+        manager.createMission(easyMission);
+        manager.createMission(hardMission);
 
-        assertThat(manager.findMission(mission1.getId())).isNotNull();
-        assertThat(manager.findMission(mission2.getId())).isNotNull();
-        manager.deleteMission(mission1);
-        assertThat(manager.findMission(mission1.getId())).isNull();
-        assertThat(manager.findMission(mission2.getId())).isNotNull();
+        assertThat(manager.findMission(easyMission.getId())).isNotNull();
+        assertThat(manager.findMission(hardMission.getId())).isNotNull();
+        manager.deleteMission(easyMission);
+        assertThat(manager.findMission(easyMission.getId())).isNull();
+        assertThat(manager.findMission(hardMission.getId())).isNotNull();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -158,32 +186,38 @@ public class MissionManagerImplTest {
         manager.deleteMission(null);
     }
 
+    @Test
+    public void deleteNonexistentMission() {
+        Mission hardMission = sampleHardMissionBuilder().build();
+        assertThatThrownBy(() -> manager.deleteMission(hardMission)).isInstanceOf(IllegalArgumentException.class);
+    }
+
 
     @Test
     public void findFreeMissions() {
         assertThat(manager.findAllMissions()).isEmpty();
 
-        Mission m1 = sampleEasyMissionBuilder().build();
-        Mission m2 = sampleHardMissionBuilder().status(MissionStatus.NOT_ASSIGNED).build();
-        manager.createMission(m1);
-        manager.createMission(m2);
+        Mission easyMission = sampleEasyMissionBuilder().build();
+        Mission hardMission = sampleHardMissionBuilder().status(MissionStatus.NOT_ASSIGNED).build();
+        manager.createMission(easyMission);
+        manager.createMission(hardMission);
 
         assertThat(manager.findAllMissions())
                 .usingFieldByFieldElementComparator()
-                .containsOnly(m2);
+                .containsOnly(hardMission);
     }
 
     @Test
     public void findAllMissions() {
         assertThat(manager.findAllMissions()).isEmpty();
 
-        Mission m1 = sampleEasyMissionBuilder().build();
-        Mission m2 = sampleHardMissionBuilder().build();
-        manager.createMission(m1);
-        manager.createMission(m2);
+        Mission easyMission = sampleEasyMissionBuilder().build();
+        Mission hardMission = sampleHardMissionBuilder().build();
+        manager.createMission(easyMission);
+        manager.createMission(hardMission);
 
         assertThat(manager.findAllMissions())
                 .usingFieldByFieldElementComparator()
-                .containsOnly(m1,m2);
+                .containsOnly(easyMission,hardMission);
     }
 }

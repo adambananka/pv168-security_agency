@@ -10,7 +10,7 @@ public class Mission {
     private String name;
     private Agent agent;
     private MissionStatus status;
-    private String info;
+    private int requiredRank;
 
     public Mission() {
     }
@@ -47,12 +47,12 @@ public class Mission {
         this.status = status;
     }
 
-    public String getInfo() {
-        return info;
+    public int getRequiredRank() {
+        return requiredRank;
     }
 
-    public void setInfo(String info) {
-        this.info = info;
+    public void setRequiredRank(int requiredRank) {
+        this.requiredRank = requiredRank;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class Mission {
                 ", name='" + name + '\'' +
                 ", agent=" + agent +
                 ", status=" + status +
-                ", info='" + info + '\'' +
+                ", requiredRank=" + requiredRank +
                 '}';
     }
 }

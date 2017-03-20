@@ -12,7 +12,7 @@ public class MissionBuilder {
     private String name;
     private Agent agent;
     private MissionStatus status = MissionStatus.NOT_ASSIGNED;
-    private String info;
+    private int requiredRank;
 
     public MissionBuilder id(Long id) {
         this.id = id;
@@ -34,8 +34,8 @@ public class MissionBuilder {
         return this;
     }
 
-    public MissionBuilder info(String info) {
-        this.info = info;
+    public MissionBuilder requiredRank(int requiredRank) {
+        this.requiredRank = requiredRank;
         return this;
     }
 
@@ -45,7 +45,7 @@ public class MissionBuilder {
         mission.setName(name);
         mission.setAgent(agent);
         mission.setStatus(status);
-        mission.setInfo(info);
+        mission.setRequiredRank(requiredRank);
         return mission;
     }
 }
