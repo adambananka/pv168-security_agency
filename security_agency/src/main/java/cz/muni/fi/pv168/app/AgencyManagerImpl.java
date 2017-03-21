@@ -19,4 +19,9 @@ public class AgencyManagerImpl implements AgencyManager {
     public List<Mission> findMissionsOfAgent(Agent agent) {
         return null;
     }
+
+    @Override
+    public List<Agent> findAvailableAgents() {
+        return null;
+    }
 }

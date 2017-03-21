@@ -2,6 +2,7 @@ package cz.muni.fi.pv168.app;
 
 import cz.muni.fi.pv168.app.agent.Agent;
 import cz.muni.fi.pv168.app.agent.AgentManagerImpl;
+import cz.muni.fi.pv168.app.common.IllegalEntityException;
 import cz.muni.fi.pv168.app.common.ValidationException;
 import org.junit.Test;
 
@@ -52,9 +53,24 @@ public class AgentManagerImplTest {
     }
 
     @Test
+    public void createAgentWithExistingId() {
+        Agent superman = supermanBuilder().id(1L).build();
+        assertThatThrownBy(() -> manager.createAgent(superman)).isInstanceOf(IllegalEntityException.class);
+    }
+
+    @Test
     public void createAgentWithNullName() {
         Agent superman = supermanBuilder()
                 .name(null)
+                .build();
+        assertThatThrownBy(() -> manager.createAgent(superman))
+                .isInstanceOf(ValidationException.class);
+    }
+
+    @Test
+    public void createAgentWithEmptyName() {
+        Agent superman = supermanBuilder()
+                .name("")
                 .build();
         assertThatThrownBy(() -> manager.createAgent(superman))
                 .isInstanceOf(ValidationException.class);
@@ -69,6 +85,26 @@ public class AgentManagerImplTest {
                 .build();
         assertThatThrownBy(() -> manager.createAgent(jackSparrow)).isInstanceOf(ValidationException.class);
     }
+
+    @Test
+    public void createAgentWithTooBigRank() {
+        Agent superman = supermanBuilder().rank(11).build();
+        assertThatThrownBy(() -> manager.createAgent(superman)).isInstanceOf(ValidationException.class);
+    }
+
+    @Test
+    public void createAgentWithZeroRank() {
+        Agent superman = supermanBuilder().rank(0).build();
+        assertThatThrownBy(() -> manager.createAgent(superman)).isInstanceOf(ValidationException.class);
+    }
+
+    @Test
+    public void createAgentWithNegativeRank() {
+        Agent superman = supermanBuilder().rank(-1).build();
+        assertThatThrownBy(() -> manager.createAgent(superman)).isInstanceOf(ValidationException.class);
+    }
+
+
 
     private void updateAgent(Consumer<Agent> updateOperation) {
         Agent superman = supermanBuilder().build();
@@ -101,10 +137,30 @@ public class AgentManagerImplTest {
     }
 
     @Test
+    public void updateAgentWithNullId() {
+        Agent superman = supermanBuilder().id(null).build();
+        assertThatThrownBy(() -> manager.updateAgent(superman)).isInstanceOf(IllegalEntityException.class);
+    }
+
+    @Test
+    public void updateMissionWithNonExistingId() {
+        Agent superman = supermanBuilder().id(1L).build();
+        assertThatThrownBy(() -> manager.updateAgent(superman)).isInstanceOf(IllegalEntityException.class);
+    }
+
+    @Test
     public void updateAgentWithNullName() {
         Agent agent = supermanBuilder().build();
         manager.createAgent(agent);
         agent.setName(null);
+        assertThatThrownBy(() -> manager.updateAgent(agent)).isInstanceOf(ValidationException.class);
+    }
+
+    @Test
+    public void updateAgentWithEmptyName() {
+        Agent agent = supermanBuilder().build();
+        manager.createAgent(agent);
+        agent.setName("");
         assertThatThrownBy(() -> manager.updateAgent(agent)).isInstanceOf(ValidationException.class);
     }
 
@@ -117,6 +173,32 @@ public class AgentManagerImplTest {
         agent.setName("JackSparrow");
         assertThatThrownBy(() -> manager.updateAgent(agent)).isInstanceOf(ValidationException.class);
     }
+
+    @Test
+    public void updateAgentWithTooBigRank() {
+        Agent superman = supermanBuilder().build();
+        manager.createAgent(superman);
+        superman.setRank(11);
+        assertThatThrownBy(() -> manager.updateAgent(superman)).isInstanceOf(ValidationException.class);
+    }
+
+    @Test
+    public void updateAgentWithZeroRank() {
+        Agent superman = supermanBuilder().build();
+        manager.createAgent(superman);
+        superman.setRank(0);
+        assertThatThrownBy(() -> manager.updateAgent(superman)).isInstanceOf(ValidationException.class);
+    }
+
+    @Test
+    public void updateAgentWithNegativeRank() {
+        Agent superman = supermanBuilder().build();
+        manager.createAgent(superman);
+        superman.setRank(-1);
+        assertThatThrownBy(() -> manager.updateAgent(superman)).isInstanceOf(ValidationException.class);
+    }
+
+
 
     @Test
     public void deleteAgent() {
@@ -139,6 +221,24 @@ public class AgentManagerImplTest {
     @Test(expected = IllegalArgumentException.class)
     public void deleteNullAgent() {
         manager.deleteAgent(null);
+    }
+
+    @Test
+    public void deleteMissionWithNullId() {
+        Agent jackSparrow = jackSparrowBuilder().id(null).build();
+        assertThatThrownBy(() -> manager.deleteAgent(jackSparrow)).isInstanceOf(IllegalEntityException.class);
+    }
+
+    @Test
+    public void deleteMissionWithNonExistingId() {
+        Agent jackSparrow = jackSparrowBuilder().id(1L).build();
+        assertThatThrownBy(() -> manager.deleteAgent(jackSparrow)).isInstanceOf(IllegalEntityException.class);
+    }
+
+    @Test
+    public void deleteNonexistentMission() {
+        Agent jackSparrow = jackSparrowBuilder().build();
+        assertThatThrownBy(() -> manager.deleteAgent(jackSparrow)).isInstanceOf(IllegalEntityException.class);
     }
 
     @Test

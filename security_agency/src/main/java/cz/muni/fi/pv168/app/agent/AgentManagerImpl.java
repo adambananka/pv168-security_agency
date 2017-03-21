@@ -29,10 +29,7 @@ public class AgentManagerImpl implements AgentManager {
         return null;
     }
 
-    @Override
-    public List<Agent> findAvailableAgents() {
-        return null;
-    }
+
 
     @Override
     public List<Agent> findAllAgents() {

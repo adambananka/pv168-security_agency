@@ -1,5 +1,7 @@
 package cz.muni.fi.pv168.app;
 
+import cz.muni.fi.pv168.app.common.IllegalEntityException;
+import cz.muni.fi.pv168.app.common.ValidationException;
 import cz.muni.fi.pv168.app.mission.Mission;
 import cz.muni.fi.pv168.app.mission.MissionManagerImpl;
 import cz.muni.fi.pv168.app.mission.MissionStatus;
@@ -51,15 +53,21 @@ public class MissionManagerImplTest {
     }
 
     @Test
+    public void createMissionWithExistingId() {
+        Mission easyMission = sampleEasyMissionBuilder().id(1L).build();
+        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(IllegalEntityException.class);
+    }
+
+    @Test
     public void createMissionWithNullName() {
         Mission easyMission = sampleEasyMissionBuilder().name(null).build();
-        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(ValidationException.class);
     }
 
     @Test
     public void createMissionWithEmptyName() {
         Mission easyMission = sampleEasyMissionBuilder().name("").build();
-        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(ValidationException.class);
     }
 
     @Test
@@ -67,25 +75,25 @@ public class MissionManagerImplTest {
         Mission easyMission = sampleEasyMissionBuilder().build();
         manager.createMission(easyMission);
         Mission hardMission = sampleHardMissionBuilder().name("easy_mission").build();
-        assertThatThrownBy(() -> manager.createMission(hardMission)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> manager.createMission(hardMission)).isInstanceOf(ValidationException.class);
     }
 
     @Test
     public void createMissionWithTooBigRequiredRank() {
         Mission easyMission = sampleEasyMissionBuilder().requiredRank(11).build();
-        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(ValidationException.class);
     }
 
     @Test
     public void createMissionWithZeroRequiredRank() {
         Mission easyMission = sampleEasyMissionBuilder().requiredRank(0).build();
-        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(ValidationException.class);
     }
 
     @Test
     public void createMissionWithNegativeRequiredRank() {
         Mission easyMission = sampleEasyMissionBuilder().requiredRank(-1).build();
-        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(ValidationException.class);
     }
 
 
@@ -123,11 +131,23 @@ public class MissionManagerImplTest {
     }
 
     @Test
+    public void updateMissionWithNullId() {
+        Mission easyMission = sampleEasyMissionBuilder().id(null).build();
+        assertThatThrownBy(() -> manager.updateMission(easyMission)).isInstanceOf(IllegalEntityException.class);
+    }
+
+    @Test
+    public void updateMissionWithNonExistingId() {
+        Mission easyMission = sampleEasyMissionBuilder().id(1L).build();
+        assertThatThrownBy(() -> manager.updateMission(easyMission)).isInstanceOf(IllegalEntityException.class);
+    }
+
+    @Test
     public void updateMissionWithNullName() {
         Mission easyMission = sampleEasyMissionBuilder().build();
         manager.createMission(easyMission);
         easyMission.setName(null);
-        assertThatThrownBy(() -> manager.updateMission(easyMission)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> manager.updateMission(easyMission)).isInstanceOf(ValidationException.class);
     }
 
     @Test
@@ -135,7 +155,7 @@ public class MissionManagerImplTest {
         Mission easyMission = sampleEasyMissionBuilder().build();
         manager.createMission(easyMission);
         easyMission.setName("");
-        assertThatThrownBy(() -> manager.updateMission(easyMission)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> manager.updateMission(easyMission)).isInstanceOf(ValidationException.class);
     }
 
     @Test
@@ -145,7 +165,7 @@ public class MissionManagerImplTest {
         manager.createMission(easyMission);
         manager.createMission(hardMission);
         easyMission.setName("hard_mission");
-        assertThatThrownBy(() -> manager.updateMission(easyMission)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> manager.updateMission(easyMission)).isInstanceOf(ValidationException.class);
     }
 
     @Test
@@ -153,7 +173,7 @@ public class MissionManagerImplTest {
         Mission hardMission = sampleHardMissionBuilder().build();
         manager.createMission(hardMission);
         hardMission.setStatus(MissionStatus.IN_PROGRESS);
-        assertThatThrownBy(() -> manager.updateMission(hardMission)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> manager.updateMission(hardMission)).isInstanceOf(ValidationException.class);
     }
 
     @Test
@@ -161,7 +181,7 @@ public class MissionManagerImplTest {
         Mission hardMission = sampleHardMissionBuilder().build();
         manager.createMission(hardMission);
         hardMission.setRequiredRank(11);
-        assertThatThrownBy(() -> manager.updateMission(hardMission)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> manager.updateMission(hardMission)).isInstanceOf(ValidationException.class);
     }
 
     @Test
@@ -169,7 +189,7 @@ public class MissionManagerImplTest {
         Mission hardMission = sampleHardMissionBuilder().build();
         manager.createMission(hardMission);
         hardMission.setRequiredRank(0);
-        assertThatThrownBy(() -> manager.updateMission(hardMission)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> manager.updateMission(hardMission)).isInstanceOf(ValidationException.class);
     }
 
     @Test
@@ -177,7 +197,7 @@ public class MissionManagerImplTest {
         Mission hardMission = sampleHardMissionBuilder().build();
         manager.createMission(hardMission);
         hardMission.setRequiredRank(-1);
-        assertThatThrownBy(() -> manager.updateMission(hardMission)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> manager.updateMission(hardMission)).isInstanceOf(ValidationException.class);
     }
 
 
@@ -201,9 +221,21 @@ public class MissionManagerImplTest {
     }
 
     @Test
+    public void deleteMissionWithNullId() {
+        Mission hardMission = sampleHardMissionBuilder().id(null).build();
+        assertThatThrownBy(() -> manager.deleteMission(hardMission)).isInstanceOf(IllegalEntityException.class);
+    }
+
+    @Test
+    public void deleteMissionWithNonExistingId() {
+        Mission hardMission = sampleHardMissionBuilder().id(1L).build();
+        assertThatThrownBy(() -> manager.deleteMission(hardMission)).isInstanceOf(IllegalEntityException.class);
+    }
+
+    @Test
     public void deleteNonexistentMission() {
         Mission hardMission = sampleHardMissionBuilder().build();
-        assertThatThrownBy(() -> manager.deleteMission(hardMission)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> manager.deleteMission(hardMission)).isInstanceOf(IllegalEntityException.class);
     }
 
 

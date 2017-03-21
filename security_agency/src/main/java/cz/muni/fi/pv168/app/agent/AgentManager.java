@@ -7,6 +7,8 @@ import cz.muni.fi.pv168.app.common.ValidationException;
 import java.util.List;
 
 /**
+ * This service allows to manipulate with agent.
+ *
  * @author Adam Baňanka, Daniel Homola
  */
 public interface AgentManager {
@@ -22,7 +24,7 @@ public interface AgentManager {
      * null, rank is negative or higher than 10.
      * @throws ServiceFailureException when db operation fails.
      */
-    void createAgent(Agent agent) throws ServiceFailureException, ValidationException, IllegalEntityException;;
+    void createAgent(Agent agent) throws ServiceFailureException, ValidationException, IllegalEntityException;
 
     /**
      * Returns agent with given id.
@@ -55,15 +57,6 @@ public interface AgentManager {
      * @throws ServiceFailureException when db operation fails.
      */
     void deleteAgent(Agent agent) throws ServiceFailureException, IllegalEntityException;
-
-
-    /**
-     * Returns list of all agents in the database.
-     *
-     * @return list of all agents in database.
-     * @throws ServiceFailureException when db operation fails.
-     */
-    List<Agent> findAvailableAgents();
 
     /**
      * Returns list of all agents in the database.

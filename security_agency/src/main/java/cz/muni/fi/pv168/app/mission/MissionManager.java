@@ -1,5 +1,9 @@
 package cz.muni.fi.pv168.app.mission;
 
+import cz.muni.fi.pv168.app.common.IllegalEntityException;
+import cz.muni.fi.pv168.app.common.ServiceFailureException;
+import cz.muni.fi.pv168.app.common.ValidationException;
+
 import java.util.List;
 
 /**
@@ -16,8 +20,12 @@ public interface MissionManager {
      * Required rank must be in range between 1 and 10.
      *
      * @param mission   mission to be created
+     * @throws IllegalArgumentException when mission is null
+     * @throws IllegalEntityException   when mission has already assigned id
+     * @throws ValidationException      when mission breaks validation rules
+     * @throws ServiceFailureException  when db operation fails
      */
-    void createMission(Mission mission);
+    void createMission(Mission mission) throws ServiceFailureException, ValidationException, IllegalEntityException;
 
     /**
      * Updates mission in database.
@@ -28,36 +36,47 @@ public interface MissionManager {
      * Required rank must be in range between 1 and 10.
      *
      * @param mission   updated mission to be stored
+     * @throws IllegalArgumentException when mission is null
+     * @throws IllegalEntityException   when mission has null id or does not exist in the database
+     * @throws ValidationException      when mission breaks validation rules
+     * @throws ServiceFailureException  when db operation fails
      */
-    void updateMission(Mission mission);
+    void updateMission(Mission mission) throws ServiceFailureException, ValidationException, IllegalEntityException;
 
     /**
      * Deletes the mission from database.
      *
      * @param mission   mission to be deleted
+     * @throws IllegalArgumentException when mission is null
+     * @throws IllegalEntityException   when given mission has null id or does not exist in the database
+     * @throws ServiceFailureException  when db operation fails
      */
-    void deleteMission(Mission mission);
+    void deleteMission(Mission mission) throws ServiceFailureException, IllegalEntityException;
 
     /**
      * Returns mission with given id.
      *
      * @param id    primary key of requested mission
      * @return      mission with given id or null if such mission doesn't exist
+     * @throws IllegalArgumentException when given id is null
+     * @throws ServiceFailureException  when db operation fails
      */
-    Mission findMission(long id);
+    Mission findMission(long id) throws ServiceFailureException;
 
     /**
      * Returns list of missions, which doesn't have any agent assigned,
      * i.e. has status NOT_ASSIGNED.
      *
      * @return  list of available missions in the database
+     * @throws ServiceFailureException  when db operation fails
      */
-    List<Mission> findAvailableMissions();
+    List<Mission> findAvailableMissions() throws ServiceFailureException;
 
     /**
      * Returns list of all missions in the database.
      *
      * @return  list of all missions in the database
+     * @throws ServiceFailureException  when db operation fails
      */
-    List<Mission> findAllMissions();
+    List<Mission> findAllMissions() throws ServiceFailureException;
 }
