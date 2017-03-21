@@ -4,7 +4,7 @@ package cz.muni.fi.pv168.app.common;
 /**
  * This exception is thrown when validation of entity fails.
  *
- * @author Daniel Homola
+ * @author Adam Baňanka, Daniel Homola
  */
 public class ValidationException extends RuntimeException {
 

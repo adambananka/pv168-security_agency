@@ -3,7 +3,7 @@ package cz.muni.fi.pv168.app.common;
 /**
  * This exception indicates service failure.
  *
- * @author Daniel Homola
+ * @author Adam Baňanka, Daniel Homola
  */
 public class ServiceFailureException extends RuntimeException {
 

@@ -10,10 +10,12 @@ import java.util.List;
  */
 public class AgencyManagerImpl implements AgencyManager {
 
-    public void AssignAgent(Agent agent, Mission mission) {
+    @Override
+    public void assignAgent(Agent agent, Mission mission) {
 
     }
 
+    @Override
     public List<Mission> findMissionsOfAgent(Agent agent) {
         return null;
     }

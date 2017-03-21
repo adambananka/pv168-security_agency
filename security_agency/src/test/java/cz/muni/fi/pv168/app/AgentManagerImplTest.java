@@ -2,6 +2,7 @@ package cz.muni.fi.pv168.app;
 
 import cz.muni.fi.pv168.app.agent.Agent;
 import cz.muni.fi.pv168.app.agent.AgentManagerImpl;
+import cz.muni.fi.pv168.app.common.ValidationException;
 import org.junit.Test;
 
 import java.util.function.Consumer;
@@ -56,7 +57,7 @@ public class AgentManagerImplTest {
                 .name(null)
                 .build();
         assertThatThrownBy(() -> manager.createAgent(superman))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(ValidationException.class);
     }
 
     @Test
@@ -66,7 +67,7 @@ public class AgentManagerImplTest {
         Agent jackSparrow = jackSparrowBuilder()
                 .name("Superman")
                 .build();
-        assertThatThrownBy(() -> manager.createAgent(jackSparrow)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> manager.createAgent(jackSparrow)).isInstanceOf(ValidationException.class);
     }
 
     private void updateAgent(Consumer<Agent> updateOperation) {
@@ -104,7 +105,7 @@ public class AgentManagerImplTest {
         Agent agent = supermanBuilder().build();
         manager.createAgent(agent);
         agent.setName(null);
-        assertThatThrownBy(() -> manager.updateAgent(agent)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> manager.updateAgent(agent)).isInstanceOf(ValidationException.class);
     }
 
     @Test
@@ -114,7 +115,7 @@ public class AgentManagerImplTest {
         manager.createAgent(agent);
         manager.createAgent(anotherAgent);
         agent.setName("JackSparrow");
-        assertThatThrownBy(() -> manager.updateAgent(agent)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> manager.updateAgent(agent)).isInstanceOf(ValidationException.class);
     }
 
     @Test
@@ -154,12 +155,5 @@ public class AgentManagerImplTest {
         assertThat(manager.findAllAgents())
                 .usingFieldByFieldElementComparator()
                 .containsOnly(superman,jackSparrow);
-
     }
-
-/*
-    @Test
-    public void findAvailableAgents() {
-    }
-*/
 }

@@ -4,7 +4,7 @@ package cz.muni.fi.pv168.app.common;
  * This exception is thrown when you try to use an entity that can not be
  * used for the operation.
  *
- * @author Daniel Homola
+ * @author Adam Baňanka, Daniel Homola
  */
 public class IllegalEntityException extends RuntimeException {
 
