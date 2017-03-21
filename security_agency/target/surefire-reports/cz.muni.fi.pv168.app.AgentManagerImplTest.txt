@@ -1,0 +1,157 @@
+-------------------------------------------------------------------------------
+Test set: cz.muni.fi.pv168.app.AgentManagerImplTest
+-------------------------------------------------------------------------------
+Tests run: 26, Failures: 23, Errors: 3, Skipped: 0, Time elapsed: 0.086 sec <<< FAILURE! - in cz.muni.fi.pv168.app.AgentManagerImplTest
+updateNullAgent(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.AssertionError: Expected exception: java.lang.IllegalArgumentException
+	at org.junit.internal.runners.statements.ExpectException.evaluate(ExpectException.java:32)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:264)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:153)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:124)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:200)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:103)
+
+createAgentWithExistingId(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0.059 sec  <<< FAILURE!
+java.lang.AssertionError: Expecting code to raise a throwable.
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.createAgentWithExistingId(AgentManagerImplTest.java:58)
+
+deleteMissionWithNonExistingId(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0.001 sec  <<< FAILURE!
+java.lang.AssertionError: Expecting code to raise a throwable.
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.deleteMissionWithNonExistingId(AgentManagerImplTest.java:233)
+
+createAgentWithZeroRank(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.AssertionError: Expecting code to raise a throwable.
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.createAgentWithZeroRank(AgentManagerImplTest.java:98)
+
+deleteAgent(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0 sec  <<< ERROR!
+java.lang.NullPointerException: null
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.deleteAgent(AgentManagerImplTest.java:209)
+
+createAgentWithNegativeRank(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0.001 sec  <<< FAILURE!
+java.lang.AssertionError: Expecting code to raise a throwable.
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.createAgentWithNegativeRank(AgentManagerImplTest.java:104)
+
+updateAgentWithZeroRank(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.AssertionError: Expecting code to raise a throwable.
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.updateAgentWithZeroRank(AgentManagerImplTest.java:190)
+
+createAgentWithEmptyName(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.AssertionError: Expecting code to raise a throwable.
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.createAgentWithEmptyName(AgentManagerImplTest.java:75)
+
+createAgentWithExistingName(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.AssertionError: Expecting code to raise a throwable.
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.createAgentWithExistingName(AgentManagerImplTest.java:86)
+
+findAllAgents(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.AssertionError: 
+Expecting actual not to be null
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.findAllAgents(AgentManagerImplTest.java:245)
+
+createAgentWithTooBigRank(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0.001 sec  <<< FAILURE!
+java.lang.AssertionError: Expecting code to raise a throwable.
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.createAgentWithTooBigRank(AgentManagerImplTest.java:92)
+
+createAgent(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0.003 sec  <<< FAILURE!
+java.lang.AssertionError: 
+Expecting actual not to be null
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.createAgent(AgentManagerImplTest.java:43)
+
+updateAgentName(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0.001 sec  <<< ERROR!
+java.lang.NullPointerException: null
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.updateAgent(AgentManagerImplTest.java:118)
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.updateAgentName(AgentManagerImplTest.java:126)
+
+createNullAgent(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0.001 sec  <<< FAILURE!
+java.lang.AssertionError: Expected exception: java.lang.IllegalArgumentException
+	at org.junit.internal.runners.statements.ExpectException.evaluate(ExpectException.java:32)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:264)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:153)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:124)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:200)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:103)
+
+updateAgentWithTooBigRank(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0.001 sec  <<< FAILURE!
+java.lang.AssertionError: Expecting code to raise a throwable.
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.updateAgentWithTooBigRank(AgentManagerImplTest.java:182)
+
+updateAgentWithNullId(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0.001 sec  <<< FAILURE!
+java.lang.AssertionError: Expecting code to raise a throwable.
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.updateAgentWithNullId(AgentManagerImplTest.java:142)
+
+updateMissionWithNonExistingId(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0.001 sec  <<< FAILURE!
+java.lang.AssertionError: Expecting code to raise a throwable.
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.updateMissionWithNonExistingId(AgentManagerImplTest.java:148)
+
+createAgentWithNullName(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0.001 sec  <<< FAILURE!
+java.lang.AssertionError: Expecting code to raise a throwable.
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.createAgentWithNullName(AgentManagerImplTest.java:66)
+
+deleteMissionWithNullId(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0.001 sec  <<< FAILURE!
+java.lang.AssertionError: Expecting code to raise a throwable.
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.deleteMissionWithNullId(AgentManagerImplTest.java:227)
+
+updateAgentWithNullName(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.AssertionError: Expecting code to raise a throwable.
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.updateAgentWithNullName(AgentManagerImplTest.java:156)
+
+deleteNonexistentMission(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0.001 sec  <<< FAILURE!
+java.lang.AssertionError: Expecting code to raise a throwable.
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.deleteNonexistentMission(AgentManagerImplTest.java:239)
+
+updateAgentWithNegativeRank(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0.001 sec  <<< FAILURE!
+java.lang.AssertionError: Expecting code to raise a throwable.
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.updateAgentWithNegativeRank(AgentManagerImplTest.java:198)
+
+updateAgentWithExistingName(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.AssertionError: Expecting code to raise a throwable.
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.updateAgentWithExistingName(AgentManagerImplTest.java:174)
+
+updateAliveStatus(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0 sec  <<< ERROR!
+java.lang.NullPointerException: null
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.updateAgent(AgentManagerImplTest.java:118)
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.updateAliveStatus(AgentManagerImplTest.java:131)
+
+deleteNullAgent(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0 sec  <<< FAILURE!
+java.lang.AssertionError: Expected exception: java.lang.IllegalArgumentException
+	at org.junit.internal.runners.statements.ExpectException.evaluate(ExpectException.java:32)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:264)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:153)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:124)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:200)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:103)
+
+updateAgentWithEmptyName(cz.muni.fi.pv168.app.AgentManagerImplTest)  Time elapsed: 0.001 sec  <<< FAILURE!
+java.lang.AssertionError: Expecting code to raise a throwable.
+	at cz.muni.fi.pv168.app.AgentManagerImplTest.updateAgentWithEmptyName(AgentManagerImplTest.java:164)
+

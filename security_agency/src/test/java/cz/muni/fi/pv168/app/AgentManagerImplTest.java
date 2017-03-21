@@ -198,8 +198,6 @@ public class AgentManagerImplTest {
         assertThatThrownBy(() -> manager.updateAgent(superman)).isInstanceOf(ValidationException.class);
     }
 
-
-
     @Test
     public void deleteAgent() {
 

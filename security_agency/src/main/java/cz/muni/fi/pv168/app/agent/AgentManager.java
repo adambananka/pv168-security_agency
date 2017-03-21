@@ -37,7 +37,7 @@ public interface AgentManager {
     Agent findAgent(long id) throws ServiceFailureException;
 
     /**
-     * Updates body in database.
+     * Updates agent in database.
      *
      * @param agent updated agent to be stored into database.
      * @throws IllegalArgumentException when agent is null.
