@@ -6,7 +6,7 @@ import cz.muni.fi.pv168.app.agent.Agent;
  * This entity class represents Mission. Mission have some name, status
  * and required rank, that agent needs, to be assigned to the mission.
  * One mission can have assigned maximum one agent.
- * All parameters are mandatory.
+ * All attributes are mandatory.
  *
  * @author Adam Baňanka, Daniel Homola
  */
