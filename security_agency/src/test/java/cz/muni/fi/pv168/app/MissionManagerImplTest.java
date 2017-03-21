@@ -71,6 +71,12 @@ public class MissionManagerImplTest {
     }
 
     @Test
+    public void createMissionWithTooBigRequiredRank() {
+        Mission easyMission = sampleEasyMissionBuilder().requiredRank(11).build();
+        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     public void createMissionWithZeroRequiredRank() {
         Mission easyMission = sampleEasyMissionBuilder().requiredRank(0).build();
         assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(IllegalArgumentException.class);
@@ -151,6 +157,14 @@ public class MissionManagerImplTest {
     }
 
     @Test
+    public void updateMissionWithTooBigRequiredRank() {
+        Mission hardMission = sampleHardMissionBuilder().build();
+        manager.createMission(hardMission);
+        hardMission.setRequiredRank(11);
+        assertThatThrownBy(() -> manager.updateMission(hardMission)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     public void updateMissionWithZeroRequiredRank() {
         Mission hardMission = sampleHardMissionBuilder().build();
         manager.createMission(hardMission);
@@ -194,7 +208,7 @@ public class MissionManagerImplTest {
 
 
     @Test
-    public void findFreeMissions() {
+    public void findAvailableMissions() {
         assertThat(manager.findAllMissions()).isEmpty();
 
         Mission easyMission = sampleEasyMissionBuilder().build();
@@ -202,7 +216,7 @@ public class MissionManagerImplTest {
         manager.createMission(easyMission);
         manager.createMission(hardMission);
 
-        assertThat(manager.findAllMissions())
+        assertThat(manager.findAvailableMissions())
                 .usingFieldByFieldElementComparator()
                 .containsOnly(hardMission);
     }

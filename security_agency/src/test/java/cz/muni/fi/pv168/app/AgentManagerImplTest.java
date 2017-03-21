@@ -20,6 +20,7 @@ public class AgentManagerImplTest {
         return new AgentBuilder()
                 .id(null)
                 .name("Superman")
+                .rank(8)
                 .alive(true);
     }
 
@@ -27,6 +28,7 @@ public class AgentManagerImplTest {
         return new AgentBuilder()
                 .id(null)
                 .name("JackSparrow")
+                .rank(3)
                 .alive(true);
     }
 
@@ -157,7 +159,7 @@ public class AgentManagerImplTest {
 
 /*
     @Test
-    public void findFreeAgents() {
+    public void findAvailableAgents() {
     }
 */
 }

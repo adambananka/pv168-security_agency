@@ -8,6 +8,7 @@ import cz.muni.fi.pv168.app.agent.Agent;
 public class AgentBuilder {
     private Long id;
     private String name;
+    private int rank;
     private boolean alive;
 
 
@@ -21,6 +22,11 @@ public class AgentBuilder {
         return this;
     }
 
+    public AgentBuilder rank(int rank) {
+        this.rank = rank;
+        return this;
+    }
+
     public AgentBuilder alive(boolean alive) {
         this.alive = alive;
         return this;
@@ -30,6 +36,7 @@ public class AgentBuilder {
         Agent agent = new Agent();
         agent.setId(id);
         agent.setName(name);
+        agent.setRank(rank);
         agent.setAlive(alive);
         return agent;
     }

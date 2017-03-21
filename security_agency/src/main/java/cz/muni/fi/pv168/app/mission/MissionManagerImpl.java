@@ -25,7 +25,7 @@ public class MissionManagerImpl implements MissionManager {
         return null;
     }
 
-    public List<Mission> findFreeMissions() {
+    public List<Mission> findAvailableMissions() {
         return null;
     }
 

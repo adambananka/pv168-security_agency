@@ -23,7 +23,7 @@ public class AgentManagerImpl implements AgentManager {
         return null;
     }
 
-    public List<Agent> findFreeAgents() {
+    public List<Agent> findAvailableAgents() {
         return null;
     }
 

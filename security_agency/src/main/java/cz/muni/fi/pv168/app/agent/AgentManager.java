@@ -15,7 +15,7 @@ public interface AgentManager {
 
     Agent findAgent(long id);
 
-    List<Agent> findFreeAgents();
+    List<Agent> findAvailableAgents();
 
     List<Agent> findAllAgents();
 }
