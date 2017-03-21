@@ -7,6 +7,7 @@ import cz.muni.fi.pv168.app.common.ValidationException;
 import cz.muni.fi.pv168.app.mission.Mission;
 import cz.muni.fi.pv168.app.mission.MissionManagerImpl;
 import cz.muni.fi.pv168.app.mission.MissionStatus;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.*;
@@ -58,6 +59,11 @@ public class AgencyManagerImplTest {
         assertThat(missionManager.findMission(missionNotInDb.getId())).isNull();
     }
 
+    @Before
+    public void setup() {
+        prepareTestData();
+    }
+
     @Test
     public void assignAgent() {
         assertThat(easyMission.getAgent()).isNull();
@@ -84,14 +90,16 @@ public class AgencyManagerImplTest {
         assertThat(hardMission.getAgent()).isNull();
     }
 
-    @Test(expected = IllegalEntityException.class)
+    @Test
     public void assignAgentAlreadyOnMission() {
-        manager.assignAgent(superman, easyMission);
+        manager.assignAgent(superman, secondaryMission);
+        assertThatThrownBy(() -> manager.assignAgent(superman, easyMission)).isInstanceOf(IllegalEntityException.class);
     }
 
-    @Test(expected = IllegalEntityException.class)
+    @Test
     public void assignAgentToAssignedMission() {
-        manager.assignAgent(flash, mainMission);
+        manager.assignAgent(superman, mainMission);
+        assertThatThrownBy(() -> manager.assignAgent(flash, mainMission)).isInstanceOf(IllegalEntityException.class);
     }
 
     @Test(expected = ValidationException.class)
@@ -139,9 +147,6 @@ public class AgencyManagerImplTest {
     @Test
     public void findMissionsOfAgent() {
         assertThat(manager.findMissionsOfAgent(flash)).isEmpty();
-        assertThat(manager.findMissionsOfAgent(superman))
-                .usingFieldByFieldElementComparator()
-                .containsOnly(mainMission);
 
         manager.assignAgent(flash, easyMission);
         assertThat(manager.findMissionsOfAgent(flash))
@@ -174,25 +179,24 @@ public class AgencyManagerImplTest {
     public void findAvailableAgents() {
         assertThat(manager.findAvailableAgents())
                 .usingFieldByFieldElementComparator()
-                .containsOnly(adam);
+                .containsOnly(flash, superman, batman, adam);
+
+        manager.assignAgent(batman, secondaryMission);
+        manager.assignAgent(superman, mainMission);
+        assertThat(manager.findAvailableAgents())
+                .usingFieldByFieldElementComparator()
+                .containsOnly(flash, adam);
 
         secondaryMission.setStatus(MissionStatus.ACCOMPLISHED);
         missionManager.updateMission(secondaryMission);
         assertThat(manager.findAvailableAgents())
                 .usingFieldByFieldElementComparator()
-                .containsOnly(adam, batman);
+                .containsOnly(flash, adam, batman);
 
-        superman.setAlive(false);
-        agentManager.updateAgent(superman);
+        adam.setAlive(false);
         assertThat(mainMission.getStatus().equals(MissionStatus.FAILED));
         assertThat(manager.findAvailableAgents())
                 .usingFieldByFieldElementComparator()
-                .containsOnly(adam, batman);
-
-        hardMission.setStatus(MissionStatus.ACCOMPLISHED);
-        missionManager.updateMission(hardMission);
-        assertThat(manager.findAvailableAgents())
-                .usingFieldByFieldElementComparator()
-                .containsOnly(adam, batman, flash);
+                .containsOnly(flash, batman);
     }
 }
