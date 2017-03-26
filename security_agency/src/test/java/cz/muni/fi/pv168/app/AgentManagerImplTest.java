@@ -53,7 +53,7 @@ public class AgentManagerImplTest {
     }
 
     @Test
-    public void createAgentWithExistingId() {
+    public void createAgentWithSetId() {
         Agent superman = supermanBuilder().id(1L).build();
         assertThatThrownBy(() -> manager.createAgent(superman)).isInstanceOf(IllegalEntityException.class);
     }
@@ -143,7 +143,7 @@ public class AgentManagerImplTest {
     }
 
     @Test
-    public void updateMissionWithNonExistingId() {
+    public void updateAgentWithNonExistingId() {
         Agent superman = supermanBuilder().id(1L).build();
         assertThatThrownBy(() -> manager.updateAgent(superman)).isInstanceOf(IllegalEntityException.class);
     }

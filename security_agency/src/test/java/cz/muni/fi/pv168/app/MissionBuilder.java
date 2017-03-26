@@ -10,7 +10,7 @@ import cz.muni.fi.pv168.app.mission.MissionStatus;
 public class MissionBuilder {
     private Long id;
     private String name;
-    private Agent agent;
+    private Long agentId;
     private MissionStatus status = MissionStatus.NOT_ASSIGNED;
     private int requiredRank;
 
@@ -24,8 +24,8 @@ public class MissionBuilder {
         return this;
     }
 
-    public MissionBuilder agent(Agent agent) {
-        this.agent = agent;
+    public MissionBuilder agentId(Long agentId) {
+        this.agentId = agentId;
         return this;
     }
 
@@ -43,7 +43,7 @@ public class MissionBuilder {
         Mission mission = new Mission();
         mission.setId(id);
         mission.setName(name);
-        mission.setAgent(agent);
+        mission.setAgentId(agentId);
         mission.setStatus(status);
         mission.setRequiredRank(requiredRank);
         return mission;

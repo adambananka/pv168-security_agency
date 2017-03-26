@@ -61,7 +61,7 @@ public interface MissionManager {
      * @throws IllegalArgumentException when given id is null
      * @throws ServiceFailureException  when db operation fails
      */
-    Mission findMission(long id) throws ServiceFailureException;
+    Mission findMission(Long id) throws ServiceFailureException;
 
     /**
      * Returns list of missions, which doesn't have any agent assigned,

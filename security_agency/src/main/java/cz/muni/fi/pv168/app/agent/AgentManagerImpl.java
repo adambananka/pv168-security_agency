@@ -1,5 +1,6 @@
 package cz.muni.fi.pv168.app.agent;
 
+import javax.sql.DataSource;
 import java.util.List;
 
 /**
@@ -8,6 +9,11 @@ import java.util.List;
  * @author Adam Baňanka, Daniel Homola
  */
 public class AgentManagerImpl implements AgentManager {
+    private DataSource dataSource;
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @Override
     public void createAgent(Agent agent) {

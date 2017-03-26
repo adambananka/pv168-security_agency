@@ -2,38 +2,71 @@ package cz.muni.fi.pv168.app;
 
 import cz.muni.fi.pv168.app.agent.Agent;
 import cz.muni.fi.pv168.app.agent.AgentManagerImpl;
+import cz.muni.fi.pv168.app.common.DBUtils;
 import cz.muni.fi.pv168.app.common.IllegalEntityException;
+import cz.muni.fi.pv168.app.common.ServiceFailureException;
 import cz.muni.fi.pv168.app.common.ValidationException;
 import cz.muni.fi.pv168.app.mission.Mission;
 import cz.muni.fi.pv168.app.mission.MissionManagerImpl;
 import cz.muni.fi.pv168.app.mission.MissionStatus;
+
+import org.apache.derby.jdbc.EmbeddedDataSource;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import javax.sql.DataSource;
+import java.sql.SQLException;
+import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Adam Baňanka, Daniel Homola
  */
 public class AgencyManagerImplTest {
-    private AgencyManagerImpl manager = new AgencyManagerImpl();
-    private AgentManagerImpl agentManager = new AgentManagerImpl();
-    private MissionManagerImpl missionManager = new MissionManagerImpl();
+    private AgencyManagerImpl manager;
+    private AgentManagerImpl agentManager;
+    private MissionManagerImpl missionManager;
+    private DataSource dataSource;
 
-    private Agent flash, superman, batman, dano, adam, agentWithNullId, agentNotInDb;
-    private Mission easyMission, secondaryMission, mainMission, hardMission, missionWithNullId, missionNotInDb;
+    private Agent flash, superman, batman, agentWithNullId, agentNotInDb;
+    private Mission easyMission, mainMission, hardMission, missionWithNullId, missionNotInDb;
+
+
+    private static DataSource prepareDataSource() {
+        EmbeddedDataSource ds = new EmbeddedDataSource();
+        ds.setDatabaseName("memory:agencymanager-test");
+        ds.setCreateDatabase("create");
+        return ds;
+    }
+
+    @Before
+    public void setup() throws SQLException {
+        dataSource = prepareDataSource();
+        DBUtils.executeSqlScript(dataSource,AgencyManager.class.getResource("createTables.sql"));
+        manager = new AgencyManagerImpl();
+        manager.setDataSource(dataSource);
+        agentManager = new AgentManagerImpl();
+        agentManager.setDataSource(dataSource);
+        missionManager = new MissionManagerImpl();
+        missionManager.setDataSource(dataSource);
+        prepareTestData();
+    }
+
+    @After
+    public void tearDown() throws SQLException {
+        DBUtils.executeSqlScript(dataSource,AgencyManager.class.getResource("dropTables.sql"));
+    }
 
     private void prepareTestData() {
         flash = new AgentBuilder().name("Flash").rank(10).alive(true).build();
-        superman = new AgentBuilder().name("Superman").rank(7).alive(true).build();
+        superman = new AgentBuilder().name("Superman").rank(7).alive(false).build();
         batman = new AgentBuilder().name("Batman").rank(3).alive(true).build();
-        dano = new AgentBuilder().name("Dano").rank(1).alive(false).build();
-        adam = new AgentBuilder().name("Adam").rank(1).alive(true).build();
 
         easyMission = new MissionBuilder().name("EasyMission").status(MissionStatus.NOT_ASSIGNED)
                 .requiredRank(1).build();
-        secondaryMission = new MissionBuilder().name("SecondaryMission").status(MissionStatus.NOT_ASSIGNED)
-                .requiredRank(3).build();
         mainMission = new MissionBuilder().name("MainMission").status(MissionStatus.NOT_ASSIGNED)
                 .requiredRank(5).build();
         hardMission = new MissionBuilder().name("HardMission").status(MissionStatus.NOT_ASSIGNED)
@@ -42,75 +75,75 @@ public class AgencyManagerImplTest {
         agentManager.createAgent(flash);
         agentManager.createAgent(superman);
         agentManager.createAgent(batman);
-        agentManager.createAgent(dano);
-        agentManager.createAgent(adam);
 
         missionManager.createMission(easyMission);
-        missionManager.createMission(secondaryMission);
         missionManager.createMission(mainMission);
         missionManager.createMission(hardMission);
 
         agentWithNullId = new AgentBuilder().id(null).build();
-        agentNotInDb = new AgentBuilder().id(dano.getId() + 100).build();
-        assertThat(agentManager.findAgent(agentNotInDb.getId())).isNull();
+        agentNotInDb = new AgentBuilder().id(batman.getId() + 100).build();
+        assertThat(agentManager.findAgent(agentNotInDb.getId()))
+                .isNull();
 
         missionWithNullId = new MissionBuilder().name("Mission_with_null_id").id(null).build();
         missionNotInDb = new MissionBuilder().name("Mission_not_in_DB").id(hardMission.getId() + 100).build();
-        assertThat(missionManager.findMission(missionNotInDb.getId())).isNull();
+        assertThat(missionManager.findMission(missionNotInDb.getId()))
+                .isNull();
     }
 
-    @Before
-    public void setup() {
-        prepareTestData();
-    }
+    //--------------------------------------------------------------------------
+    // Tests for AgencyManager.AssignAgent(Agent, Mission) operation
+    //--------------------------------------------------------------------------
 
     @Test
     public void assignAgent() {
-        assertThat(easyMission.getAgent()).isNull();
-        assertThat(secondaryMission.getAgent()).isNull();
-        assertThat(mainMission.getAgent()).isNull();
-        assertThat(hardMission.getAgent()).isNull();
+        assertThat(easyMission.getAgentId()).isNull();
+        assertThat(mainMission.getAgentId()).isNull();
+        assertThat(hardMission.getAgentId()).isNull();
 
-        manager.assignAgent(superman, mainMission);
-        manager.assignAgent(batman, secondaryMission);
+        manager.assignAgent(flash, mainMission);
+        manager.assignAgent(batman, easyMission);
 
-        assertThat(manager.findMissionsOfAgent(flash)).isEmpty();
-        assertThat(manager.findMissionsOfAgent(superman))
+        assertThat(manager.findMissionsOfAgent(flash))
                 .usingFieldByFieldElementComparator()
                 .containsOnly(mainMission);
+        assertThat(manager.findMissionsOfAgent(superman))
+                .isEmpty();
         assertThat(manager.findMissionsOfAgent(batman))
                 .usingFieldByFieldElementComparator()
-                .containsOnly(secondaryMission);
-        assertThat(manager.findMissionsOfAgent(dano)).isEmpty();
-        assertThat(manager.findMissionsOfAgent(adam)).isEmpty();
+                .containsOnly(easyMission);
 
-        assertThat(easyMission.getAgent()).isNull();
-        assertThat(secondaryMission.getAgent()).isEqualToComparingFieldByField(batman);
-        assertThat(mainMission.getAgent()).isEqualToComparingFieldByField(superman);
-        assertThat(hardMission.getAgent()).isNull();
+        assertThat(easyMission.getAgentId())
+                .isEqualTo(batman.getId());
+        assertThat(mainMission.getAgentId())
+                .isEqualTo(flash.getId());
+        assertThat(hardMission.getAgentId())
+                .isNull();
     }
 
     @Test
     public void assignAgentAlreadyOnMission() {
-        manager.assignAgent(superman, secondaryMission);
-        assertThatThrownBy(() -> manager.assignAgent(superman, easyMission)).isInstanceOf(IllegalEntityException.class);
+        manager.assignAgent(flash, mainMission);
+        assertThatThrownBy(() -> manager.assignAgent(flash, easyMission))
+                .isInstanceOf(IllegalEntityException.class);
     }
 
     @Test
     public void assignAgentToAssignedMission() {
-        manager.assignAgent(superman, mainMission);
-        assertThatThrownBy(() -> manager.assignAgent(flash, mainMission)).isInstanceOf(IllegalEntityException.class);
+        manager.assignAgent(batman, easyMission);
+        assertThatThrownBy(() -> manager.assignAgent(flash, easyMission))
+                .isInstanceOf(IllegalEntityException.class);
     }
 
     @Test(expected = ValidationException.class)
     public void assignDeadAgent() {
-        manager.assignAgent(dano, easyMission);
+        manager.assignAgent(superman, easyMission);
     }
 
 
     @Test(expected = ValidationException.class)
     public void assignAgentWithLowRank() {
-        manager.assignAgent(adam, hardMission);
+        manager.assignAgent(batman, hardMission);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -143,10 +176,14 @@ public class AgencyManagerImplTest {
         manager.assignAgent(flash, missionNotInDb);
     }
 
+    //--------------------------------------------------------------------------
+    // Tests for find* operations of AgencyManager
+    //--------------------------------------------------------------------------
 
     @Test
     public void findMissionsOfAgent() {
-        assertThat(manager.findMissionsOfAgent(flash)).isEmpty();
+        assertThat(manager.findMissionsOfAgent(flash))
+                .isEmpty();
 
         manager.assignAgent(flash, easyMission);
         assertThat(manager.findMissionsOfAgent(flash))
@@ -179,24 +216,53 @@ public class AgencyManagerImplTest {
     public void findAvailableAgents() {
         assertThat(manager.findAvailableAgents())
                 .usingFieldByFieldElementComparator()
-                .containsOnly(flash, superman, batman, adam);
-
-        manager.assignAgent(batman, secondaryMission);
-        manager.assignAgent(superman, mainMission);
-        assertThat(manager.findAvailableAgents())
-                .usingFieldByFieldElementComparator()
-                .containsOnly(flash, adam);
-
-        secondaryMission.setStatus(MissionStatus.ACCOMPLISHED);
-        missionManager.updateMission(secondaryMission);
-        assertThat(manager.findAvailableAgents())
-                .usingFieldByFieldElementComparator()
-                .containsOnly(flash, adam, batman);
-
-        adam.setAlive(false);
-        assertThat(mainMission.getStatus().equals(MissionStatus.FAILED));
-        assertThat(manager.findAvailableAgents())
-                .usingFieldByFieldElementComparator()
                 .containsOnly(flash, batman);
+
+        manager.assignAgent(batman, easyMission);
+        manager.assignAgent(flash, mainMission);
+        assertThat(manager.findAvailableAgents())
+                .isEmpty();
+
+        mainMission.setStatus(MissionStatus.ACCOMPLISHED);
+        missionManager.updateMission(mainMission);
+        assertThat(manager.findAvailableAgents())
+                .usingFieldByFieldElementComparator()
+                .containsOnly(flash);
+
+        batman.setAlive(false);
+        assertThat(easyMission.getStatus().equals(MissionStatus.FAILED));
+        assertThat(manager.findAvailableAgents())
+                .usingFieldByFieldElementComparator()
+                .containsOnly(flash);
+    }
+
+    //--------------------------------------------------------------------------
+    // Tests if AgencyManager methods throws ServiceFailureException in case of
+    // DB operation failure
+    //--------------------------------------------------------------------------
+
+    private void testExpectedServiceFailureException(Consumer<AgencyManager> operation) throws SQLException {
+        SQLException sqlException = new SQLException();
+        DataSource failingDataSource = mock(DataSource.class);
+        when(failingDataSource.getConnection()).thenThrow(sqlException);
+        manager.setDataSource(failingDataSource);
+        assertThatThrownBy(() -> operation.accept(manager))
+                .isInstanceOf(ServiceFailureException.class)
+                .hasCause(sqlException);
+    }
+
+    @Test
+    public void assignAgentWithSqlExceptionThrown() throws SQLException {
+        testExpectedServiceFailureException((agencyManager) -> agencyManager.assignAgent(flash, mainMission));
+    }
+
+    @Test
+    public void findMissionsOfAgentWithSqlExceptionThrown() throws SQLException {
+        testExpectedServiceFailureException((agencyManager) -> agencyManager.findMissionsOfAgent(flash));
+    }
+
+    @Test
+    public void findAvailableAgentsWithSqlExceptionThrown() throws SQLException {
+        testExpectedServiceFailureException((agencyManager) -> agencyManager.findAvailableAgents());
     }
 }

@@ -1,27 +1,59 @@
 package cz.muni.fi.pv168.app;
 
+import cz.muni.fi.pv168.app.common.DBUtils;
 import cz.muni.fi.pv168.app.common.IllegalEntityException;
+import cz.muni.fi.pv168.app.common.ServiceFailureException;
 import cz.muni.fi.pv168.app.common.ValidationException;
 import cz.muni.fi.pv168.app.mission.Mission;
+import cz.muni.fi.pv168.app.mission.MissionManager;
 import cz.muni.fi.pv168.app.mission.MissionManagerImpl;
 import cz.muni.fi.pv168.app.mission.MissionStatus;
-import org.junit.Test;
 
+import org.apache.derby.jdbc.EmbeddedDataSource;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Adam Baňanka
  */
 public class MissionManagerImplTest {
-    private MissionManagerImpl manager = new MissionManagerImpl();
+    private MissionManagerImpl manager;
+    private DataSource dataSource;
+
+
+    private static DataSource prepareDataSource() {
+        EmbeddedDataSource ds = new EmbeddedDataSource();
+        ds.setDatabaseName("memory:agencymanager-test");
+        ds.setCreateDatabase("create");
+        return ds;
+    }
+
+    @Before
+    public void SetUp() throws SQLException {
+        dataSource = prepareDataSource();
+        DBUtils.executeSqlScript(dataSource,AgencyManager.class.getResource("createTables.sql"));
+        manager = new MissionManagerImpl();
+        manager.setDataSource(dataSource);
+    }
+
+    @After
+    public void tearDown() throws SQLException {
+        DBUtils.executeSqlScript(dataSource,AgencyManager.class.getResource("dropTables.sql"));
+    }
 
     private MissionBuilder sampleEasyMissionBuilder() {
         return new MissionBuilder()
                 .id(null)
                 .name("easy_mission")
-                .agent(null)
+                .agentId(0L)
                 .status(MissionStatus.IN_PROGRESS)
                 .requiredRank(2);
     }
@@ -30,12 +62,14 @@ public class MissionManagerImplTest {
         return new MissionBuilder()
                 .id(null)
                 .name("hard_mission")
-                .agent(null)
+                .agentId(0L)
                 .status(MissionStatus.FAILED)
                 .requiredRank(7);
     }
 
-
+    //--------------------------------------------------------------------------
+    // Tests for MissionManager.createMission(Mission) operation
+    //--------------------------------------------------------------------------
 
     @Test
     public void createMission() {
@@ -53,21 +87,24 @@ public class MissionManagerImplTest {
     }
 
     @Test
-    public void createMissionWithExistingId() {
+    public void createMissionWithSetId() {
         Mission easyMission = sampleEasyMissionBuilder().id(1L).build();
-        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(IllegalEntityException.class);
+        assertThatThrownBy(() -> manager.createMission(easyMission))
+                .isInstanceOf(IllegalEntityException.class);
     }
 
     @Test
     public void createMissionWithNullName() {
         Mission easyMission = sampleEasyMissionBuilder().name(null).build();
-        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(ValidationException.class);
+        assertThatThrownBy(() -> manager.createMission(easyMission))
+                .isInstanceOf(ValidationException.class);
     }
 
     @Test
     public void createMissionWithEmptyName() {
         Mission easyMission = sampleEasyMissionBuilder().name("").build();
-        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(ValidationException.class);
+        assertThatThrownBy(() -> manager.createMission(easyMission))
+                .isInstanceOf(ValidationException.class);
     }
 
     @Test
@@ -75,28 +112,34 @@ public class MissionManagerImplTest {
         Mission easyMission = sampleEasyMissionBuilder().build();
         manager.createMission(easyMission);
         Mission hardMission = sampleHardMissionBuilder().name("easy_mission").build();
-        assertThatThrownBy(() -> manager.createMission(hardMission)).isInstanceOf(ValidationException.class);
+        assertThatThrownBy(() -> manager.createMission(hardMission))
+                .isInstanceOf(ValidationException.class);
     }
 
     @Test
     public void createMissionWithTooBigRequiredRank() {
         Mission easyMission = sampleEasyMissionBuilder().requiredRank(11).build();
-        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(ValidationException.class);
+        assertThatThrownBy(() -> manager.createMission(easyMission))
+                .isInstanceOf(ValidationException.class);
     }
 
     @Test
     public void createMissionWithZeroRequiredRank() {
         Mission easyMission = sampleEasyMissionBuilder().requiredRank(0).build();
-        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(ValidationException.class);
+        assertThatThrownBy(() -> manager.createMission(easyMission))
+                .isInstanceOf(ValidationException.class);
     }
 
     @Test
     public void createMissionWithNegativeRequiredRank() {
         Mission easyMission = sampleEasyMissionBuilder().requiredRank(-1).build();
-        assertThatThrownBy(() -> manager.createMission(easyMission)).isInstanceOf(ValidationException.class);
+        assertThatThrownBy(() -> manager.createMission(easyMission))
+                .isInstanceOf(ValidationException.class);
     }
 
-
+    //--------------------------------------------------------------------------
+    // Tests for MissionManager.updateMission(Mission) operation
+    //--------------------------------------------------------------------------
 
     private void updateMission(Consumer<Mission> updateOperation) {
         Mission easyMission = sampleEasyMissionBuilder().build();
@@ -106,8 +149,10 @@ public class MissionManagerImplTest {
 
         updateOperation.accept(easyMission);
         manager.updateMission(easyMission);
-        assertThat(manager.findMission(easyMission.getId())).isEqualToComparingFieldByField(easyMission);
-        assertThat(manager.findMission(hardMission.getId())).isEqualToComparingFieldByField(hardMission);
+        assertThat(manager.findMission(easyMission.getId()))
+                .isEqualToComparingFieldByField(easyMission);
+        assertThat(manager.findMission(hardMission.getId()))
+                .isEqualToComparingFieldByField(hardMission);
     }
 
     @Test
@@ -133,13 +178,15 @@ public class MissionManagerImplTest {
     @Test
     public void updateMissionWithNullId() {
         Mission easyMission = sampleEasyMissionBuilder().id(null).build();
-        assertThatThrownBy(() -> manager.updateMission(easyMission)).isInstanceOf(IllegalEntityException.class);
+        assertThatThrownBy(() -> manager.updateMission(easyMission))
+                .isInstanceOf(IllegalEntityException.class);
     }
 
     @Test
     public void updateMissionWithNonExistingId() {
         Mission easyMission = sampleEasyMissionBuilder().id(1L).build();
-        assertThatThrownBy(() -> manager.updateMission(easyMission)).isInstanceOf(IllegalEntityException.class);
+        assertThatThrownBy(() -> manager.updateMission(easyMission))
+                .isInstanceOf(IllegalEntityException.class);
     }
 
     @Test
@@ -147,7 +194,8 @@ public class MissionManagerImplTest {
         Mission easyMission = sampleEasyMissionBuilder().build();
         manager.createMission(easyMission);
         easyMission.setName(null);
-        assertThatThrownBy(() -> manager.updateMission(easyMission)).isInstanceOf(ValidationException.class);
+        assertThatThrownBy(() -> manager.updateMission(easyMission))
+                .isInstanceOf(ValidationException.class);
     }
 
     @Test
@@ -155,7 +203,8 @@ public class MissionManagerImplTest {
         Mission easyMission = sampleEasyMissionBuilder().build();
         manager.createMission(easyMission);
         easyMission.setName("");
-        assertThatThrownBy(() -> manager.updateMission(easyMission)).isInstanceOf(ValidationException.class);
+        assertThatThrownBy(() -> manager.updateMission(easyMission))
+                .isInstanceOf(ValidationException.class);
     }
 
     @Test
@@ -165,7 +214,8 @@ public class MissionManagerImplTest {
         manager.createMission(easyMission);
         manager.createMission(hardMission);
         easyMission.setName("hard_mission");
-        assertThatThrownBy(() -> manager.updateMission(easyMission)).isInstanceOf(ValidationException.class);
+        assertThatThrownBy(() -> manager.updateMission(easyMission))
+                .isInstanceOf(ValidationException.class);
     }
 
     @Test
@@ -173,7 +223,8 @@ public class MissionManagerImplTest {
         Mission hardMission = sampleHardMissionBuilder().build();
         manager.createMission(hardMission);
         hardMission.setStatus(MissionStatus.IN_PROGRESS);
-        assertThatThrownBy(() -> manager.updateMission(hardMission)).isInstanceOf(ValidationException.class);
+        assertThatThrownBy(() -> manager.updateMission(hardMission))
+                .isInstanceOf(ValidationException.class);
     }
 
     @Test
@@ -181,7 +232,8 @@ public class MissionManagerImplTest {
         Mission hardMission = sampleHardMissionBuilder().build();
         manager.createMission(hardMission);
         hardMission.setRequiredRank(11);
-        assertThatThrownBy(() -> manager.updateMission(hardMission)).isInstanceOf(ValidationException.class);
+        assertThatThrownBy(() -> manager.updateMission(hardMission))
+                .isInstanceOf(ValidationException.class);
     }
 
     @Test
@@ -189,7 +241,8 @@ public class MissionManagerImplTest {
         Mission hardMission = sampleHardMissionBuilder().build();
         manager.createMission(hardMission);
         hardMission.setRequiredRank(0);
-        assertThatThrownBy(() -> manager.updateMission(hardMission)).isInstanceOf(ValidationException.class);
+        assertThatThrownBy(() -> manager.updateMission(hardMission))
+                .isInstanceOf(ValidationException.class);
     }
 
     @Test
@@ -197,9 +250,13 @@ public class MissionManagerImplTest {
         Mission hardMission = sampleHardMissionBuilder().build();
         manager.createMission(hardMission);
         hardMission.setRequiredRank(-1);
-        assertThatThrownBy(() -> manager.updateMission(hardMission)).isInstanceOf(ValidationException.class);
+        assertThatThrownBy(() -> manager.updateMission(hardMission))
+                .isInstanceOf(ValidationException.class);
     }
 
+    //--------------------------------------------------------------------------
+    // Tests for MissionManager.deleteMission(Mission) operation
+    //--------------------------------------------------------------------------
 
     @Test
     public void deleteMission() {
@@ -208,11 +265,15 @@ public class MissionManagerImplTest {
         manager.createMission(easyMission);
         manager.createMission(hardMission);
 
-        assertThat(manager.findMission(easyMission.getId())).isNotNull();
-        assertThat(manager.findMission(hardMission.getId())).isNotNull();
+        assertThat(manager.findMission(easyMission.getId()))
+                .isNotNull();
+        assertThat(manager.findMission(hardMission.getId()))
+                .isNotNull();
         manager.deleteMission(easyMission);
-        assertThat(manager.findMission(easyMission.getId())).isNull();
-        assertThat(manager.findMission(hardMission.getId())).isNotNull();
+        assertThat(manager.findMission(easyMission.getId()))
+                .isNull();
+        assertThat(manager.findMission(hardMission.getId()))
+                .isNotNull();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -223,21 +284,27 @@ public class MissionManagerImplTest {
     @Test
     public void deleteMissionWithNullId() {
         Mission hardMission = sampleHardMissionBuilder().id(null).build();
-        assertThatThrownBy(() -> manager.deleteMission(hardMission)).isInstanceOf(IllegalEntityException.class);
+        assertThatThrownBy(() -> manager.deleteMission(hardMission))
+                .isInstanceOf(IllegalEntityException.class);
     }
 
     @Test
     public void deleteMissionWithNonExistingId() {
         Mission hardMission = sampleHardMissionBuilder().id(1L).build();
-        assertThatThrownBy(() -> manager.deleteMission(hardMission)).isInstanceOf(IllegalEntityException.class);
+        assertThatThrownBy(() -> manager.deleteMission(hardMission))
+                .isInstanceOf(IllegalEntityException.class);
     }
 
     @Test
     public void deleteNonexistentMission() {
         Mission hardMission = sampleHardMissionBuilder().build();
-        assertThatThrownBy(() -> manager.deleteMission(hardMission)).isInstanceOf(IllegalEntityException.class);
+        assertThatThrownBy(() -> manager.deleteMission(hardMission))
+                .isInstanceOf(IllegalEntityException.class);
     }
 
+    //--------------------------------------------------------------------------
+    // Tests for find* operations of MissionManager
+    //--------------------------------------------------------------------------
 
     @Test
     public void findAvailableMissions() {
@@ -265,5 +332,57 @@ public class MissionManagerImplTest {
         assertThat(manager.findAllMissions())
                 .usingFieldByFieldElementComparator()
                 .containsOnly(easyMission,hardMission);
+    }
+
+    //--------------------------------------------------------------------------
+    // Tests if MissionManager methods throws ServiceFailureException in case of
+    // DB operation failure
+    //--------------------------------------------------------------------------
+
+    private void testExpectedServiceFailureException(Consumer<MissionManager> operation) throws SQLException {
+        SQLException sqlException = new SQLException();
+        DataSource failingDataSource = mock(DataSource.class);
+        when(failingDataSource.getConnection()).thenThrow(sqlException);
+        manager.setDataSource(failingDataSource);
+        assertThatThrownBy(() -> operation.accept(manager))
+                .isInstanceOf(ServiceFailureException.class)
+                .hasCause(sqlException);
+    }
+
+    @Test
+    public void createMissionWithSqlExceptionThrown() throws SQLException {
+        Mission mission = sampleEasyMissionBuilder().build();
+        testExpectedServiceFailureException((missionManager) -> missionManager.createMission(mission));
+    }
+
+    @Test
+    public void updateMissionWithSqlExceptionThrown() throws SQLException {
+        Mission mission = sampleEasyMissionBuilder().build();
+        manager.createMission(mission);
+        testExpectedServiceFailureException((missionManager) -> missionManager.updateMission(mission));
+    }
+
+    @Test
+    public void deleteMissionWithSqlExceptionThrown() throws SQLException {
+        Mission mission = sampleEasyMissionBuilder().build();
+        manager.createMission(mission);
+        testExpectedServiceFailureException((missionManager) -> missionManager.deleteMission(mission));
+    }
+
+    @Test
+    public void findMissionWithSqlExceptionThrown() throws SQLException {
+        Mission mission = sampleEasyMissionBuilder().build();
+        manager.createMission(mission);
+        testExpectedServiceFailureException((missionManager) -> missionManager.findMission(mission.getId()));
+    }
+
+    @Test
+    public void findAllMissionWithSqlExceptionThrown() throws SQLException {
+        testExpectedServiceFailureException((missionManager) -> missionManager.findAllMissions());
+    }
+
+    @Test
+    public void findAvailableMissionWithSqlExceptionThrown() throws SQLException {
+        testExpectedServiceFailureException((missionManager) -> missionManager.findAvailableMissions());
     }
 }

@@ -1,19 +1,17 @@
 package cz.muni.fi.pv168.app.mission;
 
-import cz.muni.fi.pv168.app.agent.Agent;
-
 /**
  * This entity class represents Mission. Mission have some name, status
  * and required rank, that agent needs, to be assigned to the mission.
  * One mission can have assigned maximum one agent.
- * All attributes are mandatory.
+ * Not assigned agent is represented by value 0L in agentId.
  *
  * @author Adam Baňanka, Daniel Homola
  */
 public class Mission {
-    private Long id;
+    private Long id = null;
     private String name;
-    private Agent agent;
+    private Long agentId = 0L;
     private MissionStatus status;
     private int requiredRank;
 
@@ -36,12 +34,12 @@ public class Mission {
         this.name = name;
     }
 
-    public Agent getAgent() {
-        return agent;
+    public Long getAgentId() {
+        return agentId;
     }
 
-    public void setAgent(Agent agent) {
-        this.agent = agent;
+    public void setAgentId(Long agentId) {
+        this.agentId = agentId;
     }
 
     public MissionStatus getStatus() {
@@ -65,9 +63,24 @@ public class Mission {
         return "Mission{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", agent=" + agent +
+                ", agentId=" + agentId +
                 ", status=" + status +
                 ", requiredRank=" + requiredRank +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Mission mission = (Mission) o;
+
+        return id != null ? id.equals(mission.id) : mission.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }
