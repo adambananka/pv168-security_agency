@@ -1,22 +1,52 @@
 package cz.muni.fi.pv168.app;
 
 import cz.muni.fi.pv168.app.agent.Agent;
+import cz.muni.fi.pv168.app.agent.AgentManager;
 import cz.muni.fi.pv168.app.agent.AgentManagerImpl;
+import cz.muni.fi.pv168.app.common.DBUtils;
 import cz.muni.fi.pv168.app.common.IllegalEntityException;
+import cz.muni.fi.pv168.app.common.ServiceFailureException;
 import cz.muni.fi.pv168.app.common.ValidationException;
+import org.apache.derby.jdbc.EmbeddedDataSource;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
+import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Daniel Homola
  */
 public class AgentManagerImplTest {
-
     private AgentManagerImpl manager = new AgentManagerImpl();
+    private DataSource dataSource;
+
+    private static DataSource prepareDataSource() {
+        EmbeddedDataSource ds = new EmbeddedDataSource();
+        ds.setDatabaseName("memory:agencymanager-test");
+        ds.setCreateDatabase("create");
+        return ds;
+    }
+
+    @Before
+    public void SetUp() throws SQLException {
+        dataSource = prepareDataSource();
+        DBUtils.executeSqlScript(dataSource,AgencyManager.class.getResource("createTables.sql"));
+        manager = new AgentManagerImpl();
+        manager.setDataSource(dataSource);
+    }
+
+    @After
+    public void tearDown() throws SQLException {
+        DBUtils.executeSqlScript(dataSource,AgencyManager.class.getResource("dropTables.sql"));
+    }
 
     private AgentBuilder supermanBuilder() {
         return new AgentBuilder()
@@ -199,6 +229,14 @@ public class AgentManagerImplTest {
     }
 
     @Test
+    public void updateAgentDeadToAlive() {
+        Agent superman = supermanBuilder().alive(false).build();
+        manager.createAgent(superman);
+        superman.setAlive(true);
+        assertThatThrownBy(() -> manager.updateAgent(superman)).isInstanceOf(ValidationException.class);
+    }
+
+    @Test
     public void deleteAgent() {
 
         Agent superman = supermanBuilder().build();
@@ -253,5 +291,48 @@ public class AgentManagerImplTest {
         assertThat(manager.findAllAgents())
                 .usingFieldByFieldElementComparator()
                 .containsOnly(superman,jackSparrow);
+    }
+
+
+    private void testExpectedServiceFailureException(Consumer<AgentManager> operation) throws SQLException {
+        SQLException sqlException = new SQLException();
+        DataSource failingDataSource = mock(DataSource.class);
+        when(failingDataSource.getConnection()).thenThrow(sqlException);
+        manager.setDataSource(failingDataSource);
+        assertThatThrownBy(() -> operation.accept(manager))
+                .isInstanceOf(ServiceFailureException.class)
+                .hasCause(sqlException);
+    }
+
+    @Test
+    public void createAgentWithSqlExceptionThrown() throws SQLException {
+        Agent agent = supermanBuilder().build();
+        testExpectedServiceFailureException((agentManager) -> agentManager.createAgent(agent));
+    }
+
+    @Test
+    public void updateAgentWithSqlExceptionThrown() throws SQLException {
+        Agent agent = supermanBuilder().build();
+        manager.createAgent(agent);
+        testExpectedServiceFailureException((agentManager) -> agentManager.updateAgent(agent));
+    }
+
+    @Test
+    public void deleteAgentWithSqlExceptionThrown() throws SQLException {
+        Agent agent = supermanBuilder().build();
+        manager.createAgent(agent);
+        testExpectedServiceFailureException((agentManager) -> agentManager.deleteAgent(agent));
+    }
+
+    @Test
+    public void findMissionWithSqlExceptionThrown() throws SQLException {
+        Agent agent = supermanBuilder().build();
+        manager.createAgent(agent);
+        testExpectedServiceFailureException((agentManager) -> agentManager.findAgent(agent.getId()));
+    }
+
+    @Test
+    public void findAllMissionWithSqlExceptionThrown() throws SQLException {
+        testExpectedServiceFailureException((agentManager) -> agentManager.findAllAgents());
     }
 }

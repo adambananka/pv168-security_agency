@@ -21,7 +21,7 @@ public interface AgentManager {
      * @throws IllegalArgumentException when agent is null.
      * @throws IllegalEntityException when agent has already assigned id.
      * @throws ValidationException when agent breaks validation rules (name is
-     * null, rank is negative or higher than 10.
+     * null, empty or duplicate, rank is lower than 1 or higher than 10)
      * @throws ServiceFailureException when db operation fails.
      */
     void createAgent(Agent agent) throws ServiceFailureException, ValidationException, IllegalEntityException;
@@ -34,7 +34,7 @@ public interface AgentManager {
      * @throws IllegalArgumentException when given id is null.
      * @throws ServiceFailureException when db operation fails.
      */
-    Agent findAgent(long id) throws ServiceFailureException;
+    Agent findAgent(Long id) throws ServiceFailureException;
 
     /**
      * Updates agent in database.
@@ -43,7 +43,7 @@ public interface AgentManager {
      * @throws IllegalArgumentException when agent is null.
      * @throws IllegalEntityException when agent has null id or does not exist in the database
      * @throws ValidationException when agent breaks validation rules (name is
-     * null, rank is negative or higher than 10.
+     * null, empty or duplicate, rank is lower than 1 or higher than 10)
      * @throws ServiceFailureException when db operation fails.
      */
     void updateAgent(Agent agent) throws ServiceFailureException, ValidationException, IllegalEntityException;

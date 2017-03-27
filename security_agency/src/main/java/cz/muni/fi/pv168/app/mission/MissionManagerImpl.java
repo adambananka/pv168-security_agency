@@ -186,7 +186,7 @@ public class MissionManagerImpl implements MissionManager {
         }
     }
 
-    private static Mission executeQueryForSingleMission(PreparedStatement st)
+    public static Mission executeQueryForSingleMission(PreparedStatement st)
             throws SQLException, ServiceFailureException {
         ResultSet rs = st.executeQuery();
         if (rs.next()) {
