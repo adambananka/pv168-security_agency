@@ -41,6 +41,8 @@ public class MissionManagerImpl implements MissionManager {
 
             st.executeUpdate();
             mission.setId(DBUtils.getId(st.getGeneratedKeys()));
+
+            st.close();
             conn.commit();
             conn.setAutoCommit(true);
         } catch (SQLException ex) {
@@ -59,7 +61,7 @@ public class MissionManagerImpl implements MissionManager {
         try (Connection conn = dataSource.getConnection()) {
             conn.setAutoCommit(false);
             PreparedStatement st = conn.prepareStatement(
-                    "UPDATE Mission SET name = ?, agentid = ?, status = ?, required_rank = ? WHERE id = ?");
+                    "UPDATE Mission SET name = ?, agentId = ?, status = ?, required_rank = ? WHERE id = ?");
             st.setString(1, mission.getName());
             st.setLong(2, mission.getAgentId());
             st.setString(3, mission.getStatus().toString());
@@ -73,6 +75,7 @@ public class MissionManagerImpl implements MissionManager {
                 throw new IllegalEntityException(mission + " does not exist in DB");
             }
 
+            st.close();
             conn.commit();
             conn.setAutoCommit(true);
         } catch (SQLException ex) {
@@ -102,6 +105,7 @@ public class MissionManagerImpl implements MissionManager {
                 throw new IllegalEntityException(mission + " does not exist in DB");
             }
 
+            st.close();
             conn.commit();
             conn.setAutoCommit(true);
         } catch (SQLException ex) {
@@ -197,7 +201,7 @@ public class MissionManagerImpl implements MissionManager {
         }
     }
 
-    private static List<Mission> executeQueryForMultipleMissions(PreparedStatement st) throws SQLException {
+    public static List<Mission> executeQueryForMultipleMissions(PreparedStatement st) throws SQLException {
         ResultSet rs = st.executeQuery();
         List<Mission> result = new ArrayList<>();
         while (rs.next()) {
@@ -210,7 +214,7 @@ public class MissionManagerImpl implements MissionManager {
         Mission result = new Mission();
         result.setId(rs.getLong("id"));
         result.setName(rs.getString("name"));
-        result.setAgentId(rs.getLong("agentid"));
+        result.setAgentId(rs.getLong("agentId"));
         result.setStatus(MissionStatus.valueOf(rs.getString("status")));
         result.setRequiredRank(rs.getInt("required_rank"));
         return result;

@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Mon Mar 27 01:32:22 CEST 2017:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-015b-0cf6-a60a-000006a70358 
+Mon Mar 27 20:48:18 CEST 2017:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-015b-1118-eefd-000006a77388 
 on database directory memory:D:\school\pv168_seminarJava\pv168-agency_manager\security_agency\agencymanager-test with class loader sun.misc.Launcher$AppClassLoader@6d06d69c 
 Loaded from file:/C:/Users/Adam/.m2/repository/org/apache/derby/derby/10.12.1.1/derby-10.12.1.1.jar
 java.vendor=Oracle Corporation

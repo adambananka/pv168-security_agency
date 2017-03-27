@@ -1,9 +1,21 @@
 package cz.muni.fi.pv168.app;
 
 import cz.muni.fi.pv168.app.agent.Agent;
+import cz.muni.fi.pv168.app.agent.AgentManagerImpl;
+import cz.muni.fi.pv168.app.common.DBUtils;
+import cz.muni.fi.pv168.app.common.IllegalEntityException;
+import cz.muni.fi.pv168.app.common.ServiceFailureException;
+import cz.muni.fi.pv168.app.common.ValidationException;
 import cz.muni.fi.pv168.app.mission.Mission;
+import cz.muni.fi.pv168.app.mission.MissionManagerImpl;
+import cz.muni.fi.pv168.app.mission.MissionStatus;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,16 +30,95 @@ public class AgencyManagerImpl implements AgencyManager {
 
     @Override
     public void assignAgent(Agent agent, Mission mission) {
+        checkDataSource();
+        validate(agent, mission);
+        try (Connection conn = dataSource.getConnection()){
+            conn.setAutoCommit(false);
+            PreparedStatement st = conn.prepareStatement("UPDATE Mission SET agentId = ?, status = ? WHERE id = ?");
+            st.setLong(1, agent.getId());
+            st.setString(2, MissionStatus.IN_PROGRESS.toString());
+            st.setLong(3, mission.getId());
 
+            int count = st.executeUpdate();
+            if (count == 0) {
+                conn.rollback();
+                conn.setAutoCommit(true);
+                throw new IllegalEntityException(mission + "not in DB");
+            }
+
+            st.close();
+            conn.commit();
+            conn.setAutoCommit(true);
+        } catch (SQLException ex) {
+            throw new ServiceFailureException("Error when assigning agent on mission");
+        }
     }
 
     @Override
     public List<Mission> findMissionsOfAgent(Agent agent) {
-        return null;
+        checkDataSource();
+        checkAgent(agent);
+
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement st = conn.prepareStatement("SELECT * FROM Mission WHERE agentId = ?");
+            st.setLong(1, agent.getId());
+            return MissionManagerImpl.executeQueryForMultipleMissions(st);
+        } catch (SQLException ex) {
+            throw new ServiceFailureException("Error when getting missions of agent from DB");
+        }
     }
 
     @Override
     public List<Agent> findAvailableAgents() {
-        return null;
+        checkDataSource();
+        try (Connection conn = dataSource.getConnection()) {
+            PreparedStatement st = conn.prepareStatement("SELECT Agent.id, Agent.name, rank, alive " +
+                    "FROM Agent JOIN Mission ON Agent.id = Mission.agentId " +
+                    "WHERE Mission.status IN (?, ?)");
+            st.setString(1, MissionStatus.ACCOMPLISHED.toString());
+            st.setString(2, MissionStatus.FAILED.toString());
+            return AgentManagerImpl.executeQueryForMultipleAgents(st);
+        } catch (SQLException ex) {
+            throw new ServiceFailureException("Error when getting available agents from DB", ex);
+        }
+    }
+
+    private void checkDataSource() {
+        if (dataSource == null) {
+            throw new IllegalStateException("DataSource is not set");
+        }
+    }
+
+    private void checkAgent(Agent agent) {
+        if (agent == null) {
+            throw new IllegalArgumentException("agent is null");
+        }
+        if (agent.getId() == null) {
+            throw new IllegalEntityException("agent has null id");
+        }
+    }
+
+    private void validate(Agent agent, Mission mission) {
+        if (mission == null) {
+            throw new IllegalArgumentException("mission is null");
+        }
+        checkAgent(agent);
+        if (mission.getId() == null) {
+            throw new IllegalEntityException("mission has null id");
+        }
+        if (mission.getStatus() == MissionStatus.NOT_ASSIGNED) {
+            throw new IllegalEntityException("mission already assigned");
+        }
+        if (!agent.isAlive()) {
+            throw new ValidationException("agent is dead");
+        }
+        if (agent.getRank() < mission.getRequiredRank()) {
+            throw new ValidationException("agent's rank is too low for this mission");
+        }
+        for (Mission m : findMissionsOfAgent(agent)) {
+            if (m.getStatus() == MissionStatus.IN_PROGRESS) {
+                throw new IllegalEntityException("agent already on mission");
+            }
+        }
     }
 }
