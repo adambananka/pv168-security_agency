@@ -2,7 +2,6 @@ package cz.muni.fi.pv168.app;
 
 import cz.muni.fi.pv168.app.agent.Agent;
 import cz.muni.fi.pv168.app.agent.AgentManagerImpl;
-import cz.muni.fi.pv168.app.common.DBUtils;
 import cz.muni.fi.pv168.app.common.IllegalEntityException;
 import cz.muni.fi.pv168.app.common.ServiceFailureException;
 import cz.muni.fi.pv168.app.common.ValidationException;
@@ -15,10 +14,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This class implement AgencyManager service
+ *
  * @author Adam Baňanka, Daniel Homola
  */
 public class AgencyManagerImpl implements AgencyManager {
@@ -36,7 +36,9 @@ public class AgencyManagerImpl implements AgencyManager {
             conn.setAutoCommit(false);
             PreparedStatement st = conn.prepareStatement("UPDATE Mission SET agentId = ?, status = ? WHERE id = ?");
             st.setLong(1, agent.getId());
+            mission.setAgentId(agent.getId());
             st.setString(2, MissionStatus.IN_PROGRESS.toString());
+            mission.setStatus(MissionStatus.IN_PROGRESS);
             st.setLong(3, mission.getId());
 
             int count = st.executeUpdate();
@@ -50,7 +52,7 @@ public class AgencyManagerImpl implements AgencyManager {
             conn.commit();
             conn.setAutoCommit(true);
         } catch (SQLException ex) {
-            throw new ServiceFailureException("Error when assigning agent on mission");
+            throw new ServiceFailureException("Error when assigning agent on mission", ex);
         }
     }
 
@@ -64,7 +66,7 @@ public class AgencyManagerImpl implements AgencyManager {
             st.setLong(1, agent.getId());
             return MissionManagerImpl.executeQueryForMultipleMissions(st);
         } catch (SQLException ex) {
-            throw new ServiceFailureException("Error when getting missions of agent from DB");
+            throw new ServiceFailureException("Error when getting missions of agent from DB", ex);
         }
     }
 
@@ -73,10 +75,11 @@ public class AgencyManagerImpl implements AgencyManager {
         checkDataSource();
         try (Connection conn = dataSource.getConnection()) {
             PreparedStatement st = conn.prepareStatement("SELECT Agent.id, Agent.name, rank, alive " +
-                    "FROM Agent JOIN Mission ON Agent.id = Mission.agentId " +
-                    "WHERE Mission.status IN (?, ?)");
-            st.setString(1, MissionStatus.ACCOMPLISHED.toString());
-            st.setString(2, MissionStatus.FAILED.toString());
+                    "FROM Agent LEFT JOIN Mission ON Agent.id = Mission.agentId " +
+                    "WHERE Agent.alive = ? AND Mission.status IS NULL OR Mission.status IN (?, ?)");
+            st.setBoolean(1, true);
+            st.setString(2, MissionStatus.ACCOMPLISHED.toString());
+            st.setString(3, MissionStatus.FAILED.toString());
             return AgentManagerImpl.executeQueryForMultipleAgents(st);
         } catch (SQLException ex) {
             throw new ServiceFailureException("Error when getting available agents from DB", ex);
@@ -106,9 +109,10 @@ public class AgencyManagerImpl implements AgencyManager {
         if (mission.getId() == null) {
             throw new IllegalEntityException("mission has null id");
         }
-        if (mission.getStatus() == MissionStatus.NOT_ASSIGNED) {
+        if (mission.getStatus() != MissionStatus.NOT_ASSIGNED) {
             throw new IllegalEntityException("mission already assigned");
         }
+        checkAgentInDb(agent);
         if (!agent.isAlive()) {
             throw new ValidationException("agent is dead");
         }
@@ -119,6 +123,21 @@ public class AgencyManagerImpl implements AgencyManager {
             if (m.getStatus() == MissionStatus.IN_PROGRESS) {
                 throw new IllegalEntityException("agent already on mission");
             }
+        }
+    }
+
+    private void checkAgentInDb(Agent agent) {
+        try (Connection conn = dataSource.getConnection()){
+            PreparedStatement st = conn.prepareStatement("SELECT * FROM Agent WHERE id = ?");
+            st.setLong(1, agent.getId());
+            ResultSet rs = st.executeQuery();
+            if (!rs.next()) {
+                throw new IllegalEntityException(agent + "agent not in DB");
+            }
+            rs.close();
+            st.close();
+        } catch (SQLException ex) {
+            throw new ServiceFailureException("Error when getting agent from DB", ex);
         }
     }
 }

@@ -188,7 +188,7 @@ public class AgentManagerImpl implements AgentManager {
             Agent result = rowToAgent(rs);
             if (rs.next()) {
                 throw new ServiceFailureException(
-                        "Internal integrity error: more missions with the same id found!");
+                        "Internal integrity error: more agents with the same id found!");
             }
             return result;
         } else {
