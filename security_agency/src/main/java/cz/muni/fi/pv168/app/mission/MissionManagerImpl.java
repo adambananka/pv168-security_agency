@@ -31,20 +31,17 @@ public class MissionManagerImpl implements MissionManager {
         }
 
         try (Connection conn = dataSource.getConnection()) {
-            conn.setAutoCommit(false);
-            PreparedStatement st = conn.prepareStatement(
+            try (PreparedStatement st = conn.prepareStatement(
                     "INSERT INTO Mission (name, status, required_rank) VALUES (?, ?, ?)",
-                    Statement.RETURN_GENERATED_KEYS);
-            st.setString(1, mission.getName());
-            st.setString(2, mission.getStatus().toString());
-            st.setInt(3, mission.getRequiredRank());
+                           Statement.RETURN_GENERATED_KEYS)) {
+                st.setString(1, mission.getName());
 
-            st.executeUpdate();
-            mission.setId(DBUtils.getId(st.getGeneratedKeys()));
+                st.setString(2, mission.getStatus().toString());
+                st.setInt(3, mission.getRequiredRank());
 
-            st.close();
-            conn.commit();
-            conn.setAutoCommit(true);
+                st.executeUpdate();
+                mission.setId(DBUtils.getId(st.getGeneratedKeys()));
+            }
         } catch (SQLException ex) {
             throw new ServiceFailureException("Error when inserting mission into DB", ex);
         }
@@ -59,25 +56,24 @@ public class MissionManagerImpl implements MissionManager {
         }
         validateStatus(mission);
         try (Connection conn = dataSource.getConnection()) {
-            conn.setAutoCommit(false);
-            PreparedStatement st = conn.prepareStatement(
-                    "UPDATE Mission SET name = ?, agentId = ?, status = ?, required_rank = ? WHERE id = ?");
-            st.setString(1, mission.getName());
-            st.setLong(2, mission.getAgentId());
-            st.setString(3, mission.getStatus().toString());
-            st.setInt(4, mission.getRequiredRank());
-            st.setLong(5, mission.getId());
+            try (PreparedStatement st = conn.prepareStatement(
+                    "UPDATE Mission SET name = ?, agentId = ?, status = ?, required_rank = ? WHERE id = ?")) {
+                conn.setAutoCommit(false);
+                st.setString(1, mission.getName());
+                st.setLong(2, mission.getAgentId());
+                st.setString(3, mission.getStatus().toString());
+                st.setInt(4, mission.getRequiredRank());
+                st.setLong(5, mission.getId());
 
-            int count = st.executeUpdate();
-            if (count == 0) {
-                conn.rollback();
+                int count = st.executeUpdate();
+                if (count == 0) {
+                    conn.rollback();
+                    conn.setAutoCommit(true);
+                    throw new IllegalEntityException(mission + " does not exist in DB");
+                }
+                conn.commit();
                 conn.setAutoCommit(true);
-                throw new IllegalEntityException(mission + " does not exist in DB");
             }
-
-            st.close();
-            conn.commit();
-            conn.setAutoCommit(true);
         } catch (SQLException ex) {
             throw new ServiceFailureException("error when updating mission in DB", ex);
         }
@@ -94,20 +90,19 @@ public class MissionManagerImpl implements MissionManager {
         }
 
         try (Connection conn = dataSource.getConnection()) {
-            conn.setAutoCommit(false);
-            PreparedStatement st = conn.prepareStatement("DELETE FROM Mission WHERE id = ?");
-            st.setLong(1, mission.getId());
+            try (PreparedStatement st = conn.prepareStatement("DELETE FROM Mission WHERE id = ?")) {
+                conn.setAutoCommit(false);
+                st.setLong(1, mission.getId());
 
-            int count = st.executeUpdate();
-            if (count == 0) {
-                conn.rollback();
+                int count = st.executeUpdate();
+                if (count == 0) {
+                    conn.rollback();
+                    conn.setAutoCommit(true);
+                    throw new IllegalEntityException(mission + " does not exist in DB");
+                }
+                conn.commit();
                 conn.setAutoCommit(true);
-                throw new IllegalEntityException(mission + " does not exist in DB");
             }
-
-            st.close();
-            conn.commit();
-            conn.setAutoCommit(true);
         } catch (SQLException ex) {
             throw new ServiceFailureException("Error when deleting mission from DB", ex);
         }
@@ -121,9 +116,10 @@ public class MissionManagerImpl implements MissionManager {
         }
 
         try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement st = conn.prepareStatement("SELECT * FROM Mission WHERE id = ?");
-            st.setString(1, id.toString());
-            return executeQueryForSingleMission(st);
+            try (PreparedStatement st = conn.prepareStatement("SELECT * FROM Mission WHERE id = ?")) {
+                st.setString(1, id.toString());
+                return executeQueryForSingleMission(st);
+            }
         } catch (SQLException ex) {
             throw new ServiceFailureException("Error when getting mission from DB", ex);
         }
@@ -133,9 +129,10 @@ public class MissionManagerImpl implements MissionManager {
     public List<Mission> findAvailableMissions() throws ServiceFailureException{
         checkDataSource();
         try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement st = conn.prepareStatement("SELECT * FROM Mission WHERE status = ?");
-            st.setString(1, MissionStatus.NOT_ASSIGNED.toString());
-            return executeQueryForMultipleMissions(st);
+            try (PreparedStatement st = conn.prepareStatement("SELECT * FROM Mission WHERE status = ?")) {
+                st.setString(1, MissionStatus.NOT_ASSIGNED.toString());
+                return executeQueryForMultipleMissions(st);
+            }
         } catch (SQLException ex) {
             throw new ServiceFailureException("Error when getting available missions from DB", ex);
         }
@@ -145,8 +142,9 @@ public class MissionManagerImpl implements MissionManager {
     public List<Mission> findAllMissions() throws ServiceFailureException{
         checkDataSource();
         try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement st = conn.prepareStatement("SELECT * FROM Mission");
-            return executeQueryForMultipleMissions(st);
+            try (PreparedStatement st = conn.prepareStatement("SELECT * FROM Mission")) {
+                return executeQueryForMultipleMissions(st);
+            }
         } catch (SQLException ex) {
             throw new ServiceFailureException("Error when getting all missions from DB", ex);
         }
