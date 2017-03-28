@@ -1,8 +1,8 @@
 package cz.muni.fi.pv168.app.mission;
 
 /**
- * This entity class represents Mission. Mission have some name, status
- * and required rank, that agent needs, to be assigned to the mission.
+ * This entity class represents Mission. Mission has name, status
+ * and required rank, that agent needs to be assigned to the mission.
  * One mission can have assigned maximum one agent.
  * Not assigned agent is represented by value 0L in agentId.
  *
@@ -69,6 +69,15 @@ public class Mission {
                 '}';
     }
 
+    /**
+     * Returns true if obj represents the same grave. Two objects are considered
+     * to represent the same grave when both are instances of {@link Mission}
+     * class, both have assigned some id and this id is the same.
+     *
+     *
+     * @param o the reference object with which to compare.
+     * @return true if obj represents the same grave.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

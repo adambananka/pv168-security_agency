@@ -39,6 +39,11 @@ public class MissionBuilder {
         return this;
     }
 
+    /**
+     * Creates new instance of {@link Mission} with configured properties.
+     *
+     * @return new instance of {@link Mission} with configured properties.
+     */
     public Mission build() {
         Mission mission = new Mission();
         mission.setId(id);

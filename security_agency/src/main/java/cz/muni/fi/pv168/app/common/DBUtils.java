@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * @author Adam Baňanka
+ * @author Adam Baňanka, Daniel Homola
  */
 public class DBUtils {
 

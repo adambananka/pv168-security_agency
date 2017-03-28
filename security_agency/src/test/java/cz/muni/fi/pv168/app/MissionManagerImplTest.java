@@ -25,9 +25,13 @@ import static org.mockito.Mockito.when;
  * @author Adam Baňanka
  */
 public class MissionManagerImplTest {
+
     private MissionManagerImpl manager;
     private DataSource dataSource;
 
+    //--------------------------------------------------------------------------
+    // Test initialization
+    //--------------------------------------------------------------------------
 
     private static DataSource prepareDataSource() {
         EmbeddedDataSource ds = new EmbeddedDataSource();
@@ -37,7 +41,7 @@ public class MissionManagerImplTest {
     }
 
     @Before
-    public void SetUp() throws SQLException {
+    public void setUp() throws SQLException {
         dataSource = prepareDataSource();
         DBUtils.executeSqlScript(dataSource,AgencyManager.class.getResource("createTables.sql"));
         manager = new MissionManagerImpl();
@@ -48,6 +52,10 @@ public class MissionManagerImplTest {
     public void tearDown() throws SQLException {
         DBUtils.executeSqlScript(dataSource,AgencyManager.class.getResource("dropTables.sql"));
     }
+
+    //--------------------------------------------------------------------------
+    // Preparing test data
+    //--------------------------------------------------------------------------
 
     private MissionBuilder sampleEasyMissionBuilder() {
         return new MissionBuilder()

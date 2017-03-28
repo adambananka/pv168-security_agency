@@ -25,8 +25,13 @@ import static org.mockito.Mockito.when;
  * @author Daniel Homola
  */
 public class AgentManagerImplTest {
-    private AgentManagerImpl manager = new AgentManagerImpl();
+
+    private AgentManagerImpl manager;
     private DataSource dataSource;
+
+    //--------------------------------------------------------------------------
+    // Test initialization
+    //--------------------------------------------------------------------------
 
     private static DataSource prepareDataSource() {
         EmbeddedDataSource ds = new EmbeddedDataSource();
@@ -36,7 +41,7 @@ public class AgentManagerImplTest {
     }
 
     @Before
-    public void SetUp() throws SQLException {
+    public void setUp() throws SQLException {
         dataSource = prepareDataSource();
         DBUtils.executeSqlScript(dataSource,AgencyManager.class.getResource("createTables.sql"));
         manager = new AgentManagerImpl();
@@ -47,6 +52,10 @@ public class AgentManagerImplTest {
     public void tearDown() throws SQLException {
         DBUtils.executeSqlScript(dataSource,AgencyManager.class.getResource("dropTables.sql"));
     }
+
+    //--------------------------------------------------------------------------
+    // Preparing test data
+    //--------------------------------------------------------------------------
 
     private AgentBuilder supermanBuilder() {
         return new AgentBuilder()
@@ -63,6 +72,10 @@ public class AgentManagerImplTest {
                 .rank(3)
                 .alive(true);
     }
+
+    //--------------------------------------------------------------------------
+    // Tests for AgentManager.createAgent(Agent) operation
+    //--------------------------------------------------------------------------
 
     @Test
     public void createAgent() {
@@ -134,7 +147,9 @@ public class AgentManagerImplTest {
         assertThatThrownBy(() -> manager.createAgent(superman)).isInstanceOf(ValidationException.class);
     }
 
-
+    //--------------------------------------------------------------------------
+    // Tests for AgentManager.updateAgent(Agent) operation
+    //--------------------------------------------------------------------------
 
     private void updateAgent(Consumer<Agent> updateOperation) {
         Agent superman = supermanBuilder().build();
@@ -236,6 +251,10 @@ public class AgentManagerImplTest {
         assertThatThrownBy(() -> manager.updateAgent(superman)).isInstanceOf(ValidationException.class);
     }
 
+    //--------------------------------------------------------------------------
+    // Tests for AgentManager.deleteAgent(Agent) operation
+    //--------------------------------------------------------------------------
+
     @Test
     public void deleteAgent() {
 
@@ -277,9 +296,12 @@ public class AgentManagerImplTest {
         assertThatThrownBy(() -> manager.deleteAgent(jackSparrow)).isInstanceOf(IllegalEntityException.class);
     }
 
+    //--------------------------------------------------------------------------
+    // Tests for find* operations of AgentManager
+    //--------------------------------------------------------------------------
+
     @Test
     public void findAllAgents() {
-
         assertThat(manager.findAllAgents()).isEmpty();
 
         Agent superman = supermanBuilder().build();
@@ -293,6 +315,10 @@ public class AgentManagerImplTest {
                 .containsOnly(superman,jackSparrow);
     }
 
+    //--------------------------------------------------------------------------
+    // Tests if AgentManager methods throws ServiceFailureException in case of
+    // DB operation failure
+    //--------------------------------------------------------------------------
 
     private void testExpectedServiceFailureException(Consumer<AgentManager> operation) throws SQLException {
         SQLException sqlException = new SQLException();

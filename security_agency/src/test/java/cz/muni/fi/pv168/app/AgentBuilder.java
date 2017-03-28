@@ -32,6 +32,11 @@ public class AgentBuilder {
         return this;
     }
 
+    /**
+     * Creates new instance of {@link Agent} with configured properties.
+     *
+     * @return new instance of {@link Agent} with configured properties.
+     */
     public Agent build() {
         Agent agent = new Agent();
         agent.setId(id);
