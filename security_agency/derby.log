@@ -1,13 +1,13 @@
 ----------------------------------------------------------------
-Tue Mar 28 17:05:15 CEST 2017:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-015b-1573-1560-00000dbd3bc8 
-on database directory memory:/home/daniel/school/PV168/pv168-agency_manager/security_agency/agencymanager-test with class loader sun.misc.Launcher$AppClassLoader@4e25154f 
-Loaded from file:/home/daniel/.m2/repository/org/apache/derby/derby/10.12.1.1/derby-10.12.1.1.jar
+Mon Apr 03 20:09:46 CEST 2017:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-015b-3502-2c3e-000006be9750 
+on database directory memory:D:\school\pv168_seminarJava\pv168-agency_manager\security_agency\agencymanager-test with class loader sun.misc.Launcher$AppClassLoader@6bc7c054 
+Loaded from file:/C:/Users/Adam/.m2/repository/org/apache/derby/derby/10.12.1.1/derby-10.12.1.1.jar
 java.vendor=Oracle Corporation
-java.runtime.version=1.8.0_121-b13
-user.dir=/home/daniel/school/PV168/pv168-agency_manager/security_agency
-os.name=Linux
+java.runtime.version=1.8.0_101-b13
+user.dir=D:\school\pv168_seminarJava\pv168-agency_manager\security_agency
+os.name=Windows 10
 os.arch=amd64
-os.version=4.4.0-66-generic
+os.version=10.0
 derby.system.home=null
 Database Class Loader started - derby.database.classpath=''

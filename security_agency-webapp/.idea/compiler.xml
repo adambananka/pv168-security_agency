@@ -6,12 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="security_agency" />
         <module name="security_agency-webapp" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="security_agency" target="1.8" />
       <module name="security_agency-webapp" target="1.5" />
     </bytecodeTargetLevel>
   </component>

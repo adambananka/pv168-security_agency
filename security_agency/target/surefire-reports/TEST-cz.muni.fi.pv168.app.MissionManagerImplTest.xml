@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="35" failures="0" name="cz.muni.fi.pv168.app.MissionManagerImplTest" time="0.415" errors="0" skipped="0">
+<testsuite tests="35" failures="0" name="cz.muni.fi.pv168.app.MissionManagerImplTest" time="0.401" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.8.0_101\jre\bin"/>
@@ -44,7 +44,7 @@
     <property name="java.vm.specification.version" value="1.8"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="java.home" value="C:\Program Files\Java\jdk1.8.0_101\jre"/>
-    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher clean install"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher install"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
     <property name="user.language" value="en"/>
     <property name="awt.toolkit" value="sun.awt.windows.WToolkit"/>
@@ -63,39 +63,39 @@
     <property name="sun.desktop" value="windows"/>
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="createMissionWithSetId" time="0"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="deleteMissionWithNonExistingId" time="0.016"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="createMissionWithZeroRequiredRank" time="0.015"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionWithSqlExceptionThrown" time="0"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="findMissionWithSqlExceptionThrown" time="0.027"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="deleteNullMission" time="0.006"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="findAvailableMissionWithSqlExceptionThrown" time="0"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionRequiredRank" time="0.032"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="createMissionWithNegativeRequiredRank" time="0"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="createMission" time="0.015"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionWithNegativeRequiredRank" time="0.016"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="createNullMission" time="0.016"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionWithNullId" time="0"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="findAllMissionWithSqlExceptionThrown" time="0.015"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionWithNonExistingId" time="0.016"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionWithExistingName" time="0.015"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="createMissionWithSetId" time="0.008"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="deleteMissionWithNonExistingId" time="0.012"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="createMissionWithZeroRequiredRank" time="0.008"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionWithSqlExceptionThrown" time="0.016"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="findMissionWithSqlExceptionThrown" time="0.012"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="deleteNullMission" time="0.008"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="findAvailableMissionWithSqlExceptionThrown" time="0.012"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionRequiredRank" time="0.029"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="createMissionWithNegativeRequiredRank" time="0.005"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="createMission" time="0.016"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionWithNegativeRequiredRank" time="0.008"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="createNullMission" time="0.008"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionWithNullId" time="0.008"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="findAllMissionWithSqlExceptionThrown" time="0.008"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionWithNonExistingId" time="0.012"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionWithExistingName" time="0.016"/>
   <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionName" time="0.016"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="findAllMissions" time="0.016"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="findAvailableMissions" time="0.015"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionWithPreviousStatus" time="0"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="createMissionWithNullName" time="0.016"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="deleteMissionWithNullId" time="0"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="createMissionWithEmptyName" time="0.016"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="deleteNonexistentMission" time="0"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="deleteMission" time="0.015"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionWithNullName" time="0.016"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="createMissionWithTooBigRequiredRank" time="0"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="createMissionWithExistingName" time="0.015"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="findAllMissions" time="0.012"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="findAvailableMissions" time="0.016"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionWithPreviousStatus" time="0.012"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="createMissionWithNullName" time="0.008"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="deleteMissionWithNullId" time="0.008"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="createMissionWithEmptyName" time="0.004"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="deleteNonexistentMission" time="0.008"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="deleteMission" time="0.016"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionWithNullName" time="0.008"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="createMissionWithTooBigRequiredRank" time="0.008"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="createMissionWithExistingName" time="0.008"/>
   <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="deleteMissionWithSqlExceptionThrown" time="0.016"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionWithEmptyName" time="0.016"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionWithZeroRequiredRank" time="0.015"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateNullMission" time="0"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="createMissionWithSqlExceptionThrown" time="0.016"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionStatus" time="0.029"/>
-  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionWithTooBigRequiredRank" time="0.009"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionWithEmptyName" time="0.008"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionWithZeroRequiredRank" time="0.012"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateNullMission" time="0.004"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="createMissionWithSqlExceptionThrown" time="0.012"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionStatus" time="0.022"/>
+  <testcase classname="cz.muni.fi.pv168.app.MissionManagerImplTest" name="updateMissionWithTooBigRequiredRank" time="0.017"/>
 </testsuite>
