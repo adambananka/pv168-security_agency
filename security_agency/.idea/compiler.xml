@@ -12,7 +12,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="security_agency" target="1.8" />
-      <module name="security_agency-webapp" target="1.5" />
+      <module name="security_agency-webapp" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>
