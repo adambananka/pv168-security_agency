@@ -1,6 +1,7 @@
 package cz.muni.fi.pv168.web;
 
-import cz.muni.fi.pv168.app.mission.*;
+import cz.muni.fi.pv168.app.agent.Agent;
+import cz.muni.fi.pv168.app.agent.AgentManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,18 +12,18 @@ import java.io.IOException;
 
 
 /**
- * Servlet for managing missions.
+ * Servlet for managing agents.
  *
- * @author Adam Baňanka
+ * @author Daniel Homola
  */
-@WebServlet(MissionServlet.URL_MAPPING + "/*")
-public class MissionServlet extends HttpServlet{
-    private static final String LIST_JSP = "/list.jsp";
-    public static final String URL_MAPPING = "/missions";
+@WebServlet(AgentServlet.URL_MAPPING + "/*")
+public class AgentServlet extends HttpServlet{
+    private static final String LIST_JSP = "/listAgent.jsp";
+    public static final String URL_MAPPING = "/agents";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        showMissionsList(request, response);
+        showAgentsList(request, response);
     }
 
     @Override
@@ -35,15 +36,15 @@ public class MissionServlet extends HttpServlet{
                 String rank = request.getParameter("rank");
                 if (name == null || name.length() == 0 || rank == null || rank.length() == 0) {
                     request.setAttribute("Error", "All fields must be filled!");
-                    showMissionsList(request, response);
+                    showAgentsList(request, response);
                     return;
                 }
                 try {
-                    Mission mission = new Mission();
-                    mission.setName(name);
-                    mission.setStatus(MissionStatus.NOT_ASSIGNED);
-                    mission.setRequiredRank(Integer.parseInt(rank));
-                    getMissionManager().createMission(mission);
+                    Agent agent = new Agent();
+                    agent.setName(name);
+                    agent.setRank(Integer.parseInt(rank));
+                    agent.setAlive(true);
+                    getAgentManager().createAgent(agent);
                     response.sendRedirect(request.getContextPath()+URL_MAPPING);
                     return;
                 } catch (Exception e) {
@@ -53,7 +54,7 @@ public class MissionServlet extends HttpServlet{
             case "/delete":
                 try {
                     Long id = Long.valueOf(request.getParameter("id"));
-                    getMissionManager().deleteMission(getMissionManager().findMission(id));
+                    getAgentManager().deleteAgent(getAgentManager().findAgent(id));
                     response.sendRedirect(request.getContextPath()+URL_MAPPING);
                     return;
                 } catch (Exception e) {
@@ -68,13 +69,13 @@ public class MissionServlet extends HttpServlet{
         }
     }
 
-    private MissionManager getMissionManager() {
-        return (MissionManager) getServletContext().getAttribute("missionManager");
+    private AgentManager getAgentManager() {
+        return (AgentManager) getServletContext().getAttribute("agentManager");
     }
 
-    private void showMissionsList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void showAgentsList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            request.setAttribute("missions", getMissionManager().findAllMissions());
+            request.setAttribute("agents", getAgentManager().findAllAgents());
             request.getRequestDispatcher(LIST_JSP).forward(request, response);
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());

@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="m" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <h1>Missions</h1>
 <body>
@@ -11,36 +11,35 @@
         <th>Required rank</th>
     </tr>
     </thead>
-    <c:forEach items="${missions}" var="mission">
+    <m:forEach items="${missions}" var="mission">
         <tr>
-            <td><c:out value="${mission.name}"/></td>
-            <td><c:out value="${mission.status}"/></td>
-            <td><c:out value="${mission.requiredRank}"/></td>
+            <td><m:out value="${mission.name}"/></td>
+            <td><m:out value="${mission.status}"/></td>
+            <td><m:out value="${mission.requiredRank}"/></td>
             <td><form method="post" action="${pageContext.request.contextPath}/missions/delete?id=${mission.id}"
                       style="margin-bottom: 0;"><input type="submit" value="Delete"></form></td>
         </tr>
-    </c:forEach>
+    </m:forEach>
 </table>
 
 <h2>Insert mission</h2>
-<c:if test="${not empty chyba}">
+<m:if test="${not empty chyba}">
     <div style="border: solid 1px red; background-color: yellow; padding: 10px">
-        <c:out value="${chyba}"/>
+        <m:out value="${chyba}"/>
     </div>
-</c:if>
+</m:if>
 <form action="${pageContext.request.contextPath}/missions/add" method="post">
     <table>
         <tr>
             <th>Name:</th>
-            <td><input type="text" name="name" value="<c:out value='${param.name}'/>"/></td>
+            <td><input type="text" name="name" value="<m:out value='${param.name}'/>"/></td>
         </tr>
         <tr>
             <th>Required rank:</th>
-            <td><input type="number" name="rank" value="<c:out value='${param.rank}'/>"/></td>
+            <td><input type="number" name="rank" value="<m:out value='${param.rank}'/>"/></td>
         </tr>
     </table>
     <input type="Submit" value="Insert" />
 </form>
-
 </body>
 </html>
