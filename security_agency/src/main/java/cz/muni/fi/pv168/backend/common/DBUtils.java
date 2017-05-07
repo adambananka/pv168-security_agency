@@ -1,4 +1,7 @@
-package cz.muni.fi.pv168.app.common;
+package cz.muni.fi.pv168.backend.common;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -12,6 +15,8 @@ import java.sql.SQLException;
  * @author Adam Baňanka, Daniel Homola
  */
 public class DBUtils {
+
+    private static final Logger logger = LoggerFactory.getLogger(DBUtils.class);
 
     /**
      * Reads SQL statements from file. SQL commands in file must be separated by
@@ -34,7 +39,9 @@ public class DBUtils {
             }
             return result.toString().split(";");
         } catch (IOException ex) {
-            throw new RuntimeException("Cannot read " + url, ex);
+            String msg = "Cannot read " + url;
+            logger.error(msg, ex);
+            throw new RuntimeException(msg, ex);
         }
     }
 
@@ -64,16 +71,22 @@ public class DBUtils {
      */
     public static Long getId(ResultSet key) throws SQLException {
         if (key.getMetaData().getColumnCount() != 1) {
-            throw new IllegalArgumentException("Given ResultSet contains more columns");
+            String msg = "Given ResultSet contains more columns.";
+            logger.error(msg);
+            throw new IllegalArgumentException(msg);
         }
         if (key.next()) {
             Long result = key.getLong(1);
             if (key.next()) {
-                throw new IllegalArgumentException("Given ResultSet contains more rows");
+                String msg = "Given ResultSet contains more rows.";
+                logger.error(msg);
+                throw new IllegalArgumentException(msg);
             }
             return result;
         } else {
-            throw new IllegalArgumentException("Given ResultSet contain no rows");
+            String msg = "Given ResultSet contain no rows.";
+            logger.error(msg);
+            throw new IllegalArgumentException(msg);
         }
     }
 }

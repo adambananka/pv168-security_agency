@@ -1,7 +1,7 @@
 package cz.muni.fi.pv168.web;
 
-import cz.muni.fi.pv168.app.common.IllegalEntityException;
-import cz.muni.fi.pv168.app.mission.*;
+import cz.muni.fi.pv168.backend.common.IllegalEntityException;
+import cz.muni.fi.pv168.backend.mission.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -41,7 +41,7 @@ public class MissionServlet extends HttpServlet{
                 initUpdate(request, response);
                 break;
             case "/update":
-                update(request, response);
+                update(request, response);//not working
                 break;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Unknown action " + action);
@@ -84,6 +84,7 @@ public class MissionServlet extends HttpServlet{
         response.sendRedirect(request.getContextPath()+URL_MAPPING);
     }
 
+    //not working
     private void update(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String name = request.getParameter("name");
         String rank = request.getParameter("rank");

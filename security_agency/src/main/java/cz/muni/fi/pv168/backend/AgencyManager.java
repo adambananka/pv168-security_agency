@@ -1,10 +1,10 @@
-package cz.muni.fi.pv168.app;
+package cz.muni.fi.pv168.backend;
 
-import cz.muni.fi.pv168.app.agent.Agent;
-import cz.muni.fi.pv168.app.common.IllegalEntityException;
-import cz.muni.fi.pv168.app.common.ServiceFailureException;
-import cz.muni.fi.pv168.app.common.ValidationException;
-import cz.muni.fi.pv168.app.mission.Mission;
+import cz.muni.fi.pv168.backend.agent.Agent;
+import cz.muni.fi.pv168.backend.common.IllegalEntityException;
+import cz.muni.fi.pv168.backend.common.ServiceFailureException;
+import cz.muni.fi.pv168.backend.common.ValidationException;
+import cz.muni.fi.pv168.backend.mission.Mission;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package cz.muni.fi.pv168.app.common;
+package cz.muni.fi.pv168.backend.common;
 
 /**
  * This exception is thrown when you try to use an entity that can not be

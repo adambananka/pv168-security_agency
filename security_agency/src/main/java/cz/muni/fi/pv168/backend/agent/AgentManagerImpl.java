@@ -1,13 +1,15 @@
-package cz.muni.fi.pv168.app.agent;
+package cz.muni.fi.pv168.backend.agent;
 
-import cz.muni.fi.pv168.app.common.DBUtils;
-import cz.muni.fi.pv168.app.common.IllegalEntityException;
-import cz.muni.fi.pv168.app.common.ServiceFailureException;
-import cz.muni.fi.pv168.app.common.ValidationException;
-import cz.muni.fi.pv168.app.mission.Mission;
-import cz.muni.fi.pv168.app.mission.MissionManagerImpl;
-import cz.muni.fi.pv168.app.mission.MissionStatus;
+import cz.muni.fi.pv168.backend.common.DBUtils;
+import cz.muni.fi.pv168.backend.common.IllegalEntityException;
+import cz.muni.fi.pv168.backend.common.ServiceFailureException;
+import cz.muni.fi.pv168.backend.common.ValidationException;
+import cz.muni.fi.pv168.backend.mission.Mission;
+import cz.muni.fi.pv168.backend.mission.MissionManagerImpl;
+import cz.muni.fi.pv168.backend.mission.MissionStatus;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,6 +21,9 @@ import java.util.List;
  * @author Adam Baňanka, Daniel Homola
  */
 public class AgentManagerImpl implements AgentManager {
+
+    private static final Logger logger = LoggerFactory.getLogger(AgentManagerImpl.class);
+
     private DataSource dataSource;
 
     public void setDataSource(DataSource dataSource) {
@@ -27,10 +32,13 @@ public class AgentManagerImpl implements AgentManager {
 
     @Override
     public void createAgent(Agent agent) {
+        logger.info("Creating new agent...");
         checkDataSource();
         validate(agent);
         if (agent.getId() != null) {
-            throw new IllegalEntityException("agent id is already set");
+            String msg = "Agent id is already set.";
+            logger.error(msg);
+            throw new IllegalEntityException(msg);
         }
 
         try (Connection conn = dataSource.getConnection()) {
@@ -43,18 +51,24 @@ public class AgentManagerImpl implements AgentManager {
 
                 st.executeUpdate();
                 agent.setId(DBUtils.getId(st.getGeneratedKeys()));
+                logger.info("New agent successfully created.");
             }
         } catch (SQLException ex) {
-            throw new ServiceFailureException("Error when inserting agent into DB", ex);
+            String msg = "Error when inserting agent into DB.";
+            logger.error(msg, ex);
+            throw new ServiceFailureException(msg, ex);
         }
     }
 
     @Override
     public void updateAgent(Agent agent) {
+        logger.info("Updating agent...");
         checkDataSource();
         validate(agent);
         if (agent.getId() == null) {
-            throw new IllegalEntityException("agent id is null");
+            String msg = "Agent id is null.";
+            logger.error(msg);
+            throw new IllegalEntityException(msg);
         }
         validateAlive(agent);
         try (Connection conn = dataSource.getConnection()) {
@@ -70,7 +84,9 @@ public class AgentManagerImpl implements AgentManager {
                 if (count == 0) {
                     conn.rollback();
                     conn.setAutoCommit(true);
-                    throw new IllegalEntityException(agent + " does not exist in DB");
+                    String msg = agent + " does not exist in DB.";
+                    logger.error(msg);
+                    throw new IllegalEntityException(msg);
                 }
                 if (!agent.isAlive()) {
                     updateDeadAgentMission(agent);
@@ -78,20 +94,28 @@ public class AgentManagerImpl implements AgentManager {
 
                 conn.commit();
                 conn.setAutoCommit(true);
+                logger.info("Agent successfully updated.");
             }
         } catch (SQLException ex) {
-            throw new ServiceFailureException("error when updating agent in DB", ex);
+            String msg = "Error when updating agent in DB.";
+            logger.error(msg, ex);
+            throw new ServiceFailureException(msg, ex);
         }
     }
 
     @Override
     public void deleteAgent(Agent agent) {
+        logger.info("Deleting agent...");
         checkDataSource();
         if (agent == null) {
-            throw new IllegalArgumentException("agent is null");
+            String msg = "Agent is null.";
+            logger.error(msg);
+            throw new IllegalArgumentException(msg);
         }
         if (agent.getId() == null) {
-            throw new IllegalEntityException("agent id is null");
+            String msg = "Agent id is null.";
+            logger.error(msg);
+            throw new IllegalEntityException(msg);
         }
 
         try (Connection conn = dataSource.getConnection()) {
@@ -104,13 +128,18 @@ public class AgentManagerImpl implements AgentManager {
                 if (count == 0) {
                     conn.rollback();
                     conn.setAutoCommit(true);
-                    throw new IllegalEntityException(agent + " does not exist in DB");
+                    String msg = agent + " does not exist in DB.";
+                    logger.error(msg);
+                    throw new IllegalEntityException(msg);
                 }
                 conn.commit();
                 conn.setAutoCommit(true);
+                logger.info("Agent successfully deleted.");
             }
         } catch (SQLException ex) {
-            throw new ServiceFailureException("Error when deleting agent from DB", ex);
+            String msg = "Error when deleting agent from DB.";
+            logger.error(msg, ex);
+            throw new ServiceFailureException(msg, ex);
         }
     }
 
@@ -118,7 +147,9 @@ public class AgentManagerImpl implements AgentManager {
     public Agent findAgent(Long id) {
         checkDataSource();
         if (id == null) {
-            throw new IllegalArgumentException("id is null");
+            String msg = "Agent id is null.";
+            logger.error(msg);
+            throw new IllegalArgumentException(msg);
         }
 
         try (Connection conn = dataSource.getConnection()) {
@@ -127,7 +158,9 @@ public class AgentManagerImpl implements AgentManager {
                 return executeQueryForSingleAgent(st);
             }
         } catch (SQLException ex) {
-            throw new ServiceFailureException("Error when getting mission from DB", ex);
+            String msg = "Error when getting agent from DB.";
+            logger.error(msg);
+            throw new ServiceFailureException(msg, ex);
         }
     }
 
@@ -139,33 +172,47 @@ public class AgentManagerImpl implements AgentManager {
                 return executeQueryForMultipleAgents(st);
             }
         } catch (SQLException ex) {
-            throw new ServiceFailureException("Error when getting all missions from DB", ex);
+            String msg = "Error when getting all agents from DB.";
+            logger.error(msg, ex);
+            throw new ServiceFailureException(msg, ex);
         }
     }
 
     private void checkDataSource() {
         if (dataSource == null) {
-            throw new IllegalStateException("DataSource is not set");
+            String msg = "DataSource is not set.";
+            logger.error(msg);
+            throw new IllegalStateException(msg);
         }
     }
 
     private void validate(Agent agent) {
         if (agent == null) {
-            throw new IllegalArgumentException("agent is null");
+            String msg = "Agent is null.";
+            logger.error(msg);
+            throw new IllegalArgumentException(msg);
         }
         if (agent.getRank() < 1 || agent.getRank() > 10) {
-            throw new ValidationException("rank is out of range");
+            String msg = "Agent rank is out of range.";
+            logger.error(msg);
+            throw new ValidationException(msg);
         }
         if (agent.getName() == null) {
-            throw new ValidationException("name is null");
+            String msg = "Agent name is null.";
+            logger.error(msg);
+            throw new ValidationException(msg);
         }
         if (agent.getName().equals("")) {
-            throw new ValidationException("name is empty");
+            String msg = "Agent name is empty.";
+            logger.error(msg);
+            throw new ValidationException(msg);
         }
         List<Agent> all = findAllAgents();
         for (Agent a : all) {
             if (!a.getId().equals(agent.getId()) && agent.getName().equals(a.getName())) {
-                throw new ValidationException("name is duplicate");
+                String msg = "Agent name is duplicate.";
+                logger.error(msg);
+                throw new ValidationException(msg);
             }
         }
     }
@@ -174,7 +221,9 @@ public class AgentManagerImpl implements AgentManager {
         if (agent.isAlive()) {
             Agent old = findAgent(agent.getId());
             if (old != null && !old.isAlive()) {
-                throw new ValidationException("agent can't be resurrected");
+                String msg = "Agent can't be resurrected.";
+                logger.error(msg);
+                throw new ValidationException(msg);
             }
         }
     }
@@ -185,8 +234,9 @@ public class AgentManagerImpl implements AgentManager {
         if (rs.next()) {
             Agent result = rowToAgent(rs);
             if (rs.next()) {
-                throw new ServiceFailureException(
-                        "Internal integrity error: more agents with the same id found!");
+                String msg = "Internal integrity error: more agents with the same id found.";
+                logger.error(msg);
+                throw new ServiceFailureException(msg);
             }
             return result;
         } else {
@@ -229,7 +279,9 @@ public class AgentManagerImpl implements AgentManager {
                 updateSt.execute();
             }
         } catch (SQLException ex) {
-            throw new ServiceFailureException("error when updating mission in DB", ex);
+            String msg = "Error when updating agent in DB.";
+            logger.error(msg, ex);
+            throw new ServiceFailureException(msg, ex);
         }
     }
 }

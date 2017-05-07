@@ -1,4 +1,4 @@
-package cz.muni.fi.pv168.app.mission;
+package cz.muni.fi.pv168.backend.mission;
 
 /**
  * @author Adam Baňanka, Daniel Homola

@@ -1,10 +1,12 @@
-package cz.muni.fi.pv168.app.mission;
+package cz.muni.fi.pv168.backend.mission;
 
-import cz.muni.fi.pv168.app.common.DBUtils;
-import cz.muni.fi.pv168.app.common.IllegalEntityException;
-import cz.muni.fi.pv168.app.common.ServiceFailureException;
-import cz.muni.fi.pv168.app.common.ValidationException;
+import cz.muni.fi.pv168.backend.common.DBUtils;
+import cz.muni.fi.pv168.backend.common.IllegalEntityException;
+import cz.muni.fi.pv168.backend.common.ServiceFailureException;
+import cz.muni.fi.pv168.backend.common.ValidationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
@@ -16,6 +18,9 @@ import java.util.List;
  * @author Adam Baňanka, Daniel Homola
  */
 public class MissionManagerImpl implements MissionManager {
+
+    private static final Logger logger = LoggerFactory.getLogger(MissionManagerImpl.class);
+
     private DataSource dataSource;
 
     public void setDataSource(DataSource dataSource) {
@@ -24,10 +29,13 @@ public class MissionManagerImpl implements MissionManager {
 
     @Override
     public void createMission(Mission mission) throws IllegalEntityException{
+        logger.info("Creating new mission...");
         checkDataSource();
         validate(mission);
         if (mission.getId() != null) {
-            throw new IllegalEntityException("mission id is already set");
+            String msg = "Mission id is already set.";
+            logger.error(msg);
+            throw new IllegalEntityException(msg);
         }
 
         try (Connection conn = dataSource.getConnection()) {
@@ -41,18 +49,24 @@ public class MissionManagerImpl implements MissionManager {
 
                 st.executeUpdate();
                 mission.setId(DBUtils.getId(st.getGeneratedKeys()));
+                logger.info("New mission successfully created.");
             }
         } catch (SQLException ex) {
-            throw new ServiceFailureException("Error when inserting mission into DB", ex);
+            String msg = "Error when inserting mission into DB.";
+            logger.error(msg, ex);
+            throw new ServiceFailureException(msg, ex);
         }
     }
 
     @Override
     public void updateMission(Mission mission) {
+        logger.info("Updating mission...");
         checkDataSource();
         validate(mission);
         if (mission.getId() == null) {
-            throw new IllegalEntityException("mission id is null");
+            String msg = "Mission id is null.";
+            logger.error(msg);
+            throw new IllegalEntityException(msg);
         }
         validateStatus(mission);
         try (Connection conn = dataSource.getConnection()) {
@@ -69,24 +83,34 @@ public class MissionManagerImpl implements MissionManager {
                 if (count == 0) {
                     conn.rollback();
                     conn.setAutoCommit(true);
-                    throw new IllegalEntityException(mission + " does not exist in DB");
+                    String msg = mission + " does not exist in DB.";
+                    logger.error(msg);
+                    throw new IllegalEntityException(msg);
                 }
                 conn.commit();
                 conn.setAutoCommit(true);
+                logger.info("Mission successfully updated.");
             }
         } catch (SQLException ex) {
-            throw new ServiceFailureException("error when updating mission in DB", ex);
+            String msg = "Error when updating mission in DB.";
+            logger.error(msg, ex);
+            throw new ServiceFailureException(msg, ex);
         }
     }
 
     @Override
     public void deleteMission(Mission mission) throws IllegalEntityException, ServiceFailureException{
+        logger.info("Deleting mission...");
         checkDataSource();
         if (mission == null) {
-            throw new IllegalArgumentException("mission is null");
+            String msg = "Mission is null.";
+            logger.error(msg);
+            throw new IllegalArgumentException(msg);
         }
         if (mission.getId() == null) {
-            throw new IllegalEntityException("mission id is null");
+            String msg = "Mission id is null.";
+            logger.error(msg);
+            throw new IllegalEntityException(msg);
         }
 
         try (Connection conn = dataSource.getConnection()) {
@@ -98,13 +122,18 @@ public class MissionManagerImpl implements MissionManager {
                 if (count == 0) {
                     conn.rollback();
                     conn.setAutoCommit(true);
-                    throw new IllegalEntityException(mission + " does not exist in DB");
+                    String msg = mission + " does not exist in DB.";
+                    logger.error(msg);
+                    throw new IllegalEntityException(msg);
                 }
                 conn.commit();
                 conn.setAutoCommit(true);
+                logger.info("Mission successfully deleted.");
             }
         } catch (SQLException ex) {
-            throw new ServiceFailureException("Error when deleting mission from DB", ex);
+            String msg = "Error when deleting mission from DB.";
+            logger.error(msg, ex);
+            throw new ServiceFailureException(msg, ex);
         }
     }
 
@@ -112,7 +141,9 @@ public class MissionManagerImpl implements MissionManager {
     public Mission findMission(Long id) throws IllegalArgumentException, ServiceFailureException{
         checkDataSource();
         if (id == null) {
-            throw new IllegalArgumentException("id is null");
+            String msg = "Mission id is null.";
+            logger.error(msg);
+            throw new IllegalArgumentException(msg);
         }
 
         try (Connection conn = dataSource.getConnection()) {
@@ -121,7 +152,9 @@ public class MissionManagerImpl implements MissionManager {
                 return executeQueryForSingleMission(st);
             }
         } catch (SQLException ex) {
-            throw new ServiceFailureException("Error when getting mission from DB", ex);
+            String msg = "Error when getting mission from DB.";
+            logger.error(msg, ex);
+            throw new ServiceFailureException(msg, ex);
         }
     }
 
@@ -134,7 +167,9 @@ public class MissionManagerImpl implements MissionManager {
                 return executeQueryForMultipleMissions(st);
             }
         } catch (SQLException ex) {
-            throw new ServiceFailureException("Error when getting available missions from DB", ex);
+            String msg = "Error when getting available missions from DB.";
+            logger.error(msg, ex);
+            throw new ServiceFailureException(msg, ex);
         }
     }
 
@@ -146,33 +181,47 @@ public class MissionManagerImpl implements MissionManager {
                 return executeQueryForMultipleMissions(st);
             }
         } catch (SQLException ex) {
-            throw new ServiceFailureException("Error when getting all missions from DB", ex);
+            String msg = "Error when getting all missions from DB.";
+            logger.error(msg, ex);
+            throw new ServiceFailureException(msg, ex);
         }
     }
 
     private void checkDataSource() {
         if (dataSource == null) {
-            throw new IllegalStateException("DataSource is not set");
+            String msg = "DataSource is not set.";
+            logger.error(msg);
+            throw new IllegalStateException(msg);
         }
     }
 
     private void validate(Mission mission) {
         if (mission == null) {
-            throw new IllegalArgumentException("mission is null");
+            String msg = "Mission is null.";
+            logger.error(msg);
+            throw new IllegalArgumentException(msg);
         }
         if (mission.getRequiredRank() < 1 || mission.getRequiredRank() > 10) {
-            throw new ValidationException("required rank is out of range");
+            String msg = "Mission required rank is out of range.";
+            logger.error(msg);
+            throw new ValidationException(msg);
         }
         if (mission.getName() == null) {
-            throw new ValidationException("mission name is null");
+            String msg = "Mission name is null.";
+            logger.error(msg);
+            throw new ValidationException(msg);
         }
         if (mission.getName().equals("")) {
-            throw new ValidationException("mission name is empty");
+            String msg = "Mission name is empty.";
+            logger.error(msg);
+            throw new ValidationException(msg);
         }
         List<Mission> all = findAllMissions();
         for (Mission m : all) {
             if (!m.getId().equals(mission.getId()) && mission.getName().equals(m.getName())) {
-                throw new ValidationException("mission name is duplicate");
+                String msg = "Mission name is duplicate.";
+                logger.error(msg);
+                throw new ValidationException(msg);
             }
         }
     }
@@ -180,7 +229,9 @@ public class MissionManagerImpl implements MissionManager {
     private void validateStatus(Mission mission) {
         Mission old = findMission(mission.getId());
         if (old != null && old.getStatus().ordinal() > mission.getStatus().ordinal()) {
-            throw new ValidationException("mission status can't be changed to previous one");
+            String msg = "Mission status can't be changed to previous one.";
+            logger.error(msg);
+            throw new ValidationException(msg);
         }
     }
 
@@ -190,8 +241,9 @@ public class MissionManagerImpl implements MissionManager {
         if (rs.next()) {
             Mission result = rowToMission(rs);
             if (rs.next()) {
-                throw new ServiceFailureException(
-                        "Internal integrity error: more missions with the same id found!");
+                String msg = "Internal integrity error: more missions with the same id found.";
+                logger.error(msg);
+                throw new ServiceFailureException(msg);
             }
             return result;
         } else {

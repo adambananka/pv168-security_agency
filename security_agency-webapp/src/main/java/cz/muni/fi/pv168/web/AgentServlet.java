@@ -1,7 +1,7 @@
 package cz.muni.fi.pv168.web;
 
-import cz.muni.fi.pv168.app.agent.Agent;
-import cz.muni.fi.pv168.app.agent.AgentManager;
+import cz.muni.fi.pv168.backend.agent.Agent;
+import cz.muni.fi.pv168.backend.agent.AgentManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

@@ -1,14 +1,16 @@
-package cz.muni.fi.pv168.app;
+package cz.muni.fi.pv168.backend;
 
-import cz.muni.fi.pv168.app.agent.Agent;
-import cz.muni.fi.pv168.app.agent.AgentManagerImpl;
-import cz.muni.fi.pv168.app.common.IllegalEntityException;
-import cz.muni.fi.pv168.app.common.ServiceFailureException;
-import cz.muni.fi.pv168.app.common.ValidationException;
-import cz.muni.fi.pv168.app.mission.Mission;
-import cz.muni.fi.pv168.app.mission.MissionManagerImpl;
-import cz.muni.fi.pv168.app.mission.MissionStatus;
+import cz.muni.fi.pv168.backend.agent.Agent;
+import cz.muni.fi.pv168.backend.agent.AgentManagerImpl;
+import cz.muni.fi.pv168.backend.common.IllegalEntityException;
+import cz.muni.fi.pv168.backend.common.ServiceFailureException;
+import cz.muni.fi.pv168.backend.common.ValidationException;
+import cz.muni.fi.pv168.backend.mission.Mission;
+import cz.muni.fi.pv168.backend.mission.MissionManagerImpl;
+import cz.muni.fi.pv168.backend.mission.MissionStatus;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,6 +24,9 @@ import java.util.List;
  * @author Adam Baňanka, Daniel Homola
  */
 public class AgencyManagerImpl implements AgencyManager {
+
+    private static final Logger logger = LoggerFactory.getLogger(AgencyManagerImpl.class);
+
     private DataSource dataSource;
 
     public void setDataSource(DataSource dataSource) {
@@ -30,6 +35,7 @@ public class AgencyManagerImpl implements AgencyManager {
 
     @Override
     public void assignAgent(Agent agent, Mission mission) {
+        logger.info("Assigning agent to mission...");
         checkDataSource();
         validate(agent, mission);
         try (Connection conn = dataSource.getConnection()){
@@ -45,13 +51,18 @@ public class AgencyManagerImpl implements AgencyManager {
                 if (count == 0) {
                     conn.rollback();
                     conn.setAutoCommit(true);
-                    throw new IllegalEntityException(mission + "not in DB");
+                    String msg = mission + "not in DB.";
+                    logger.error(msg);
+                    throw new IllegalEntityException(msg);
                 }
                 conn.commit();
                 conn.setAutoCommit(true);
+                logger.info("Agent successfully assigned to mission.");
             }
         } catch (SQLException ex) {
-            throw new ServiceFailureException("Error when assigning agent on mission", ex);
+            String msg = "Error when assigning agent to mission.";
+            logger.error(msg, ex);
+            throw new ServiceFailureException(msg, ex);
         }
     }
 
@@ -66,7 +77,9 @@ public class AgencyManagerImpl implements AgencyManager {
                 return MissionManagerImpl.executeQueryForMultipleMissions(st);
             }
         } catch (SQLException ex) {
-            throw new ServiceFailureException("Error when getting missions of agent from DB", ex);
+            String msg = "Error when getting missions of agent from DB.";
+            logger.error(msg, ex);
+            throw new ServiceFailureException(msg, ex);
         }
     }
 
@@ -83,46 +96,66 @@ public class AgencyManagerImpl implements AgencyManager {
                 return AgentManagerImpl.executeQueryForMultipleAgents(st);
             }
         } catch (SQLException ex) {
-            throw new ServiceFailureException("Error when getting available agents from DB", ex);
+            String msg = "Error when getting available agents from DB.";
+            logger.error(msg, ex);
+            throw new ServiceFailureException(msg, ex);
         }
     }
 
     private void checkDataSource() {
         if (dataSource == null) {
-            throw new IllegalStateException("DataSource is not set");
+            String msg = "DataSource is not set.";
+            logger.error(msg);
+            throw new IllegalStateException(msg);
         }
     }
 
     private void checkAgent(Agent agent) {
         if (agent == null) {
-            throw new IllegalArgumentException("agent is null");
+            String msg = "Agent is null.";
+            logger.error(msg);
+            throw new IllegalArgumentException(msg);
         }
         if (agent.getId() == null) {
-            throw new IllegalEntityException("agent has null id");
+            String msg = "Agent has null id.";
+            logger.error(msg);
+            throw new IllegalEntityException(msg);
         }
     }
 
     private void validate(Agent agent, Mission mission) {
         if (mission == null) {
-            throw new IllegalArgumentException("mission is null");
+            String msg = "Mission is null.";
+            logger.error(msg);
+            throw new IllegalArgumentException(msg);
         }
         checkAgent(agent);
         if (mission.getId() == null) {
-            throw new IllegalEntityException("mission has null id");
+            String msg = "Mission has null id.";
+            logger.error(msg);
+            throw new IllegalEntityException(msg);
         }
         if (mission.getStatus() != MissionStatus.NOT_ASSIGNED) {
-            throw new IllegalEntityException("mission already assigned");
+            String msg = "Mission already assigned.";
+            logger.error(msg);
+            throw new IllegalEntityException(msg);
         }
         checkAgentInDb(agent);
         if (!agent.isAlive()) {
-            throw new ValidationException("agent is dead");
+            String msg = "Agent is dead.";
+            logger.error(msg);
+            throw new ValidationException(msg);
         }
         if (agent.getRank() < mission.getRequiredRank()) {
-            throw new ValidationException("agent's rank is too low for this mission");
+            String msg = "Agent's rank is too low for this mission.";
+            logger.error(msg);
+            throw new ValidationException(msg);
         }
         for (Mission m : findMissionsOfAgent(agent)) {
             if (m.getStatus() == MissionStatus.IN_PROGRESS) {
-                throw new IllegalEntityException("agent already on mission");
+                String msg = "Agent is already on mission.";
+                logger.error(msg);
+                throw new IllegalEntityException(msg);
             }
         }
     }
@@ -133,11 +166,15 @@ public class AgencyManagerImpl implements AgencyManager {
                 st.setLong(1, agent.getId());
                 ResultSet rs = st.executeQuery();
                 if (!rs.next()) {
-                    throw new IllegalEntityException(agent + "agent not in DB");
+                    String msg = agent + "agent not in DB.";
+                    logger.error(msg);
+                    throw new IllegalEntityException(msg);
                 }
             }
         } catch (SQLException ex) {
-            throw new ServiceFailureException("Error when getting agent from DB", ex);
+            String msg = "Error when getting agent from DB.";
+            logger.error(msg, ex);
+            throw new ServiceFailureException(msg, ex);
         }
     }
 }

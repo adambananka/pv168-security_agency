@@ -1,4 +1,4 @@
-package cz.muni.fi.pv168.app.agent;
+package cz.muni.fi.pv168.backend.agent;
 
 /**
  * This entity represents Agent. Agent has name, rank and

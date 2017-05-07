@@ -1,4 +1,4 @@
-package cz.muni.fi.pv168.app.common;
+package cz.muni.fi.pv168.backend.common;
 
 
 /**

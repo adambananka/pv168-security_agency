@@ -1,6 +1,6 @@
-package cz.muni.fi.pv168.app;
+package cz.muni.fi.pv168.backend;
 
-import cz.muni.fi.pv168.app.agent.Agent;
+import cz.muni.fi.pv168.backend.agent.Agent;
 
 /**
  * @author Daniel Homola

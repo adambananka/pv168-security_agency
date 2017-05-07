@@ -1,4 +1,4 @@
-package cz.muni.fi.pv168.app.mission;
+package cz.muni.fi.pv168.backend.mission;
 
 /**
  * This entity class represents Mission. Mission has name, status

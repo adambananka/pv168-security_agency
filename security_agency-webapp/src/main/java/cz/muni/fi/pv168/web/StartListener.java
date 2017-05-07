@@ -1,9 +1,9 @@
 package cz.muni.fi.pv168.web;
 
-import cz.muni.fi.pv168.app.AgencyManager;
-import cz.muni.fi.pv168.app.agent.AgentManagerImpl;
-import cz.muni.fi.pv168.app.common.DBUtils;
-import cz.muni.fi.pv168.app.mission.MissionManagerImpl;
+import cz.muni.fi.pv168.backend.AgencyManager;
+import cz.muni.fi.pv168.backend.agent.AgentManagerImpl;
+import cz.muni.fi.pv168.backend.common.DBUtils;
+import cz.muni.fi.pv168.backend.mission.MissionManagerImpl;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.derby.jdbc.EmbeddedDriver;
 import javax.servlet.ServletContext;

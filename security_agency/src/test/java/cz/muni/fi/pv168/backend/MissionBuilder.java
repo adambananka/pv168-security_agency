@@ -1,8 +1,7 @@
-package cz.muni.fi.pv168.app;
+package cz.muni.fi.pv168.backend;
 
-import cz.muni.fi.pv168.app.agent.Agent;
-import cz.muni.fi.pv168.app.mission.Mission;
-import cz.muni.fi.pv168.app.mission.MissionStatus;
+import cz.muni.fi.pv168.backend.mission.Mission;
+import cz.muni.fi.pv168.backend.mission.MissionStatus;
 
 /**
  * @author Adam Baňanka
