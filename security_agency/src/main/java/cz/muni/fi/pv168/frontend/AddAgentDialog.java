@@ -8,7 +8,7 @@ public class AddAgentDialog extends JDialog {
     private JButton buttonOK;
     private JButton buttonCancel;
     private JTextField agentNameField;
-    private JSpinner agentRankSpinner;
+    private JSlider agentRankSlider;
 
     public AddAgentDialog() {
         setContentPane(contentPane);

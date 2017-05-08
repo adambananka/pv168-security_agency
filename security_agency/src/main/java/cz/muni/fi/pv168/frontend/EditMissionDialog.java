@@ -8,8 +8,11 @@ public class EditMissionDialog extends JDialog {
     private JButton buttonOK;
     private JButton buttonCancel;
     private JTextField missionNameField;
-    private JComboBox missionStatusBox;
-    private JSpinner missionRequiredRankSpinner;
+    private JSlider missionRequiredRankSlider;
+    private JRadioButton notAssignedRadioButton;
+    private JRadioButton inProgressRadioButton;
+    private JRadioButton accomplishedRadioButton;
+    private JRadioButton failedRadioButton;
 
     public EditMissionDialog() {
         setContentPane(contentPane);

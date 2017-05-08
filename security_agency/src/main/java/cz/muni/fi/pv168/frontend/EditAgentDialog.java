@@ -8,8 +8,9 @@ public class EditAgentDialog extends JDialog {
     private JButton buttonOK;
     private JButton buttonCancel;
     private JTextField agentNameField;
-    private JSpinner agentRankSpinner;
-    private JComboBox agentAliveBox;
+    private JRadioButton trueRadioButton;
+    private JRadioButton falseRadioButton;
+    private JSlider agentRankSlider;
 
     public EditAgentDialog() {
         setContentPane(contentPane);

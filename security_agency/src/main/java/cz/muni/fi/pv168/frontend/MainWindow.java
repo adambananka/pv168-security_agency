@@ -15,8 +15,18 @@ public class MainWindow {
     private JButton addAgentButton;
     private JButton addMissionButton;
     private JButton assignAgentButton;
-    private JComboBox comboBox1;
-    private JComboBox comboBox2;
-    private JTextArea agentInfo;
-    private JTextArea missionInfo;
+    private JRadioButton allAgentsRadioButton;
+    private JRadioButton availableAgentsRadioButton;
+    private JRadioButton availableMissionsRadioButton;
+    private JRadioButton agentsMissionsRadioButton;
+    private JRadioButton allMissionsRadioButton;
+    private JLabel missionRequiredRankInfo;
+    private JLabel missionStatusInfo;
+    private JLabel agentAliveInfo;
+    private JLabel agentRankInfo;
+
+    public static void main(String[] args) {
+        MainWindow app = new MainWindow();
+
+    }
 }

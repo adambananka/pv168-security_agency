@@ -8,7 +8,7 @@ public class AddMissionDialog extends JDialog {
     private JButton buttonOK;
     private JButton buttonCancel;
     private JTextField missionNameField;
-    private JSpinner missionRequiredRankSpinner;
+    private JSlider missionRequiredRankSlider;
 
     public AddMissionDialog() {
         setContentPane(contentPane);
