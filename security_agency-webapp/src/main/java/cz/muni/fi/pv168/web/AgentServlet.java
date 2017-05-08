@@ -62,7 +62,7 @@ public class AgentServlet extends HttpServlet{
                     return;
                 }
             case "/update":
-                //TODO
+                //TO DO
                 return;
             default:
                 response.sendError(HttpServletResponse.SC_NOT_FOUND, "Unknown action " + action);

@@ -49,11 +49,12 @@ public class Agent {
 
     @Override
     public String toString() {
-        return "Agent{" +
+        return name;
+        /*return "Agent{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", alive=" + alive +
-                '}';
+                '}';*/
     }
 
     /**

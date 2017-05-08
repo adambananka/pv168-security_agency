@@ -1,276 +1,291 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="cz.muni.fi.pv168.frontend.MainWindow">
-  <grid id="27dc6" layout-manager="GridLayoutManager" row-count="5" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-    <margin top="0" left="0" bottom="0" right="0"/>
+  <grid id="27dc6" binding="ContentPane" layout-manager="GridLayoutManager" row-count="1" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
-      <xy x="20" y="20" width="573" height="416"/>
+      <xy x="20" y="20" width="573" height="428"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
-      <component id="dd737" class="javax.swing.JList" binding="agentList">
-        <constraints>
-          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="50"/>
-          </grid>
-        </constraints>
-        <properties>
-          <selectionMode value="0"/>
-        </properties>
-      </component>
-      <component id="1644f" class="javax.swing.JList" binding="missionList">
-        <constraints>
-          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="50"/>
-          </grid>
-        </constraints>
-        <properties/>
-      </component>
-      <grid id="a5515" layout-manager="GridLayoutManager" row-count="3" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="4f70b" layout-manager="GridLayoutManager" row-count="5" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
-          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
         <border type="none"/>
         <children>
-          <vspacer id="67e57">
+          <component id="f967d" class="javax.swing.JButton" binding="addAgentButton">
             <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
-          </vspacer>
-          <grid id="1340a" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <properties>
+              <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="AddAgentButton"/>
+            </properties>
+          </component>
+          <component id="bbda2" class="javax.swing.JButton" binding="addMissionButton">
+            <constraints>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="AddMissionButton"/>
+            </properties>
+          </component>
+          <grid id="b8695" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
             <border type="none"/>
             <children>
-              <component id="be003" class="javax.swing.JLabel">
+              <component id="9fa95" class="javax.swing.JRadioButton" binding="allAgentsRadioButton">
                 <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="AgentInfoLabel"/>
+                  <selected value="true"/>
+                  <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="AgentSelectionAll"/>
                 </properties>
               </component>
-              <component id="34cd6" class="javax.swing.JLabel">
+              <component id="7cef1" class="javax.swing.JRadioButton" binding="availableAgentsRadioButton">
                 <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="RankLabel"/>
+                  <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="AgentSelectionAvailable"/>
                 </properties>
               </component>
-              <component id="f3e24" class="javax.swing.JLabel" binding="agentRankInfo">
+              <component id="70c19" class="javax.swing.JLabel">
                 <constraints>
-                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value=""/>
-                </properties>
-              </component>
-              <component id="965f3" class="javax.swing.JLabel">
-                <constraints>
-                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="AliveLabel"/>
-                </properties>
-              </component>
-              <component id="d75c0" class="javax.swing.JLabel" binding="agentAliveInfo">
-                <constraints>
-                  <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value=""/>
+                  <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="ShowAgentsLabel"/>
                 </properties>
               </component>
             </children>
           </grid>
-          <grid id="173fd" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="a1b82" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
-              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties/>
             <border type="none"/>
             <children>
-              <component id="bb249" class="javax.swing.JLabel">
+              <component id="fbd0f" class="javax.swing.JRadioButton" binding="availableMissionsRadioButton">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="MissionSelectionAvailable"/>
+                </properties>
+              </component>
+              <component id="44095" class="javax.swing.JRadioButton" binding="agentsMissionsRadioButton">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="MissionSelectionAgent"/>
+                </properties>
+              </component>
+              <component id="e6094" class="javax.swing.JRadioButton" binding="allMissionsRadioButton">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <selected value="true"/>
+                  <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="MissionSelectionAll"/>
+                </properties>
+              </component>
+              <component id="f1c30" class="javax.swing.JLabel">
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="MissionInfoLabel"/>
-                </properties>
-              </component>
-              <component id="125fc" class="javax.swing.JLabel">
-                <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="MissionStatusLabel"/>
-                </properties>
-              </component>
-              <component id="83953" class="javax.swing.JLabel" binding="missionStatusInfo">
-                <constraints>
-                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value=""/>
-                </properties>
-              </component>
-              <component id="ea322" class="javax.swing.JLabel">
-                <constraints>
-                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="RequiredRankLabel"/>
-                </properties>
-              </component>
-              <component id="de403" class="javax.swing.JLabel" binding="missionRequiredRankInfo">
-                <constraints>
-                  <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value=""/>
+                  <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="ShowMissionsLabel"/>
                 </properties>
               </component>
             </children>
           </grid>
-        </children>
-      </grid>
-      <component id="b9b08" class="javax.swing.JButton" binding="editAgentButton">
-        <constraints>
-          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="EditAgentButton"/>
-        </properties>
-      </component>
-      <component id="44340" class="javax.swing.JButton" binding="editMissionButton">
-        <constraints>
-          <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="EditMissionButton"/>
-        </properties>
-      </component>
-      <component id="5b73c" class="javax.swing.JButton" binding="deleteAgentButton">
-        <constraints>
-          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="DeleteAgentButton"/>
-        </properties>
-      </component>
-      <component id="e8ba" class="javax.swing.JButton" binding="deleteMissionButton">
-        <constraints>
-          <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="DeleteMissionButton"/>
-        </properties>
-      </component>
-      <component id="f967d" class="javax.swing.JButton" binding="addAgentButton">
-        <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="AddAgentButton"/>
-        </properties>
-      </component>
-      <component id="bbda2" class="javax.swing.JButton" binding="addMissionButton">
-        <constraints>
-          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="AddMissionButton"/>
-        </properties>
-      </component>
-      <component id="ebc95" class="javax.swing.JButton" binding="assignAgentButton">
-        <constraints>
-          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="AssignAgentButton"/>
-        </properties>
-      </component>
-      <grid id="b8695" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
-        <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties/>
-        <border type="none"/>
-        <children>
-          <component id="9fa95" class="javax.swing.JRadioButton" binding="allAgentsRadioButton">
+          <component id="dd737" class="javax.swing.JList" binding="agentList">
             <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="50"/>
+              </grid>
             </constraints>
             <properties>
-              <selected value="true"/>
-              <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="AgentSelectionAll"/>
+              <selectionMode value="0"/>
             </properties>
           </component>
-          <component id="7cef1" class="javax.swing.JRadioButton" binding="availableAgentsRadioButton">
+          <component id="1644f" class="javax.swing.JList" binding="missionList">
             <constraints>
-              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="50"/>
+              </grid>
+            </constraints>
+            <properties/>
+          </component>
+          <grid id="a5515" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+            <margin top="0" left="0" bottom="0" right="0"/>
+            <constraints>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <vspacer id="67e57">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </vspacer>
+              <grid id="1340a" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="be003" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="AgentInfoLabel"/>
+                    </properties>
+                  </component>
+                  <component id="34cd6" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="RankLabel"/>
+                    </properties>
+                  </component>
+                  <component id="f3e24" class="javax.swing.JLabel" binding="agentRankInfo">
+                    <constraints>
+                      <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                  <component id="965f3" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="AliveLabel"/>
+                    </properties>
+                  </component>
+                  <component id="d75c0" class="javax.swing.JLabel" binding="agentAliveInfo">
+                    <constraints>
+                      <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <grid id="173fd" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="bb249" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="MissionInfoLabel"/>
+                    </properties>
+                  </component>
+                  <component id="125fc" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="MissionStatusLabel"/>
+                    </properties>
+                  </component>
+                  <component id="83953" class="javax.swing.JLabel" binding="missionStatusInfo">
+                    <constraints>
+                      <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                  <component id="ea322" class="javax.swing.JLabel">
+                    <constraints>
+                      <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="RequiredRankLabel"/>
+                    </properties>
+                  </component>
+                  <component id="de403" class="javax.swing.JLabel" binding="missionRequiredRankInfo">
+                    <constraints>
+                      <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value=""/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+              <vspacer id="7de3a">
+                <constraints>
+                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+                </constraints>
+              </vspacer>
+            </children>
+          </grid>
+          <component id="b9b08" class="javax.swing.JButton" binding="editAgentButton">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="AgentSelectionAvailable"/>
+              <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="EditAgentButton"/>
             </properties>
           </component>
-          <component id="70c19" class="javax.swing.JLabel">
+          <component id="ebc95" class="javax.swing.JButton" binding="assignAgentButton">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="ShowAgentsLabel"/>
+              <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="AssignAgentButton"/>
             </properties>
           </component>
-        </children>
-      </grid>
-      <grid id="a1b82" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
-        <constraints>
-          <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties/>
-        <border type="none"/>
-        <children>
-          <component id="fbd0f" class="javax.swing.JRadioButton" binding="availableMissionsRadioButton">
+          <component id="44340" class="javax.swing.JButton" binding="editMissionButton">
             <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="MissionSelectionAvailable"/>
+              <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="EditMissionButton"/>
             </properties>
           </component>
-          <component id="44095" class="javax.swing.JRadioButton" binding="agentsMissionsRadioButton">
+          <component id="5b73c" class="javax.swing.JButton" binding="deleteAgentButton">
             <constraints>
-              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="MissionSelectionAgent"/>
+              <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="DeleteAgentButton"/>
             </properties>
           </component>
-          <component id="e6094" class="javax.swing.JRadioButton" binding="allMissionsRadioButton">
+          <component id="e8ba" class="javax.swing.JButton" binding="deleteMissionButton">
             <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <selected value="true"/>
-              <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="MissionSelectionAll"/>
-            </properties>
-          </component>
-          <component id="f1c30" class="javax.swing.JLabel">
-            <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="ShowMissionsLabel"/>
+              <text resource-bundle="cz/muni/fi/pv168/frontend/locale" key="DeleteMissionButton"/>
             </properties>
           </component>
         </children>

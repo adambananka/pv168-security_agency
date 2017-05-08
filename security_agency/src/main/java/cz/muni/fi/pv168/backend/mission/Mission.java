@@ -60,13 +60,14 @@ public class Mission {
 
     @Override
     public String toString() {
-        return "Mission{" +
+        return name;
+        /*return "Mission{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", agentId=" + agentId +
                 ", status=" + status +
                 ", requiredRank=" + requiredRank +
-                '}';
+                '}';*/
     }
 
     /**
