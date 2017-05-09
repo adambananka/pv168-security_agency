@@ -1,8 +1,16 @@
 package cz.muni.fi.pv168.frontend;
 
+import cz.muni.fi.pv168.backend.common.ValidationException;
+import cz.muni.fi.pv168.backend.mission.Mission;
+import cz.muni.fi.pv168.backend.mission.MissionManager;
+import cz.muni.fi.pv168.backend.mission.MissionStatus;
+
 import javax.swing.*;
 import java.awt.event.*;
 
+/**
+ * @author Adam Baňanka, Daniel Homola
+ */
 public class AddMissionDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
@@ -10,15 +18,17 @@ public class AddMissionDialog extends JDialog {
     private JTextField missionNameField;
     private JSlider missionRequiredRankSlider;
 
-    public AddMissionDialog() {
+    private MissionManager missionManager;
+
+    public AddMissionDialog(MissionManager manager) {
+        missionManager = manager;
+
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
         buttonOK.addActionListener(e -> onOK());
-
         buttonCancel.addActionListener(e -> onCancel());
-
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -26,26 +36,32 @@ public class AddMissionDialog extends JDialog {
                 onCancel();
             }
         });
-
         // call onCancel() on ESCAPE
         contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
                 JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+
+        setTitle("Add Mission dialog"); //TODO localize
+        setLocationRelativeTo(this);
     }
 
     private void onOK() {
-        // add your code here
-        dispose();
+        Mission mission = new Mission();
+        mission.setStatus(MissionStatus.NOT_ASSIGNED);
+        mission.setName(missionNameField.getText());
+        mission.setRequiredRank(missionRequiredRankSlider.getValue());
+
+        try {
+            missionManager.createMission(mission);
+            dispose();
+        } catch (ValidationException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage() + " Please, correct it."); //TODO localize
+            onOK();
+        }
+        //TODO check
     }
 
     private void onCancel() {
         // add your code here if necessary
         dispose();
-    }
-
-    public static void main(String[] args) {
-        AddMissionDialog dialog = new AddMissionDialog();
-        dialog.pack();
-        dialog.setVisible(true);
-        System.exit(0);
     }
 }
