@@ -3,6 +3,7 @@ package cz.muni.fi.pv168.frontend;
 import cz.muni.fi.pv168.backend.common.ValidationException;
 import cz.muni.fi.pv168.backend.mission.Mission;
 import cz.muni.fi.pv168.backend.mission.MissionManager;
+import cz.muni.fi.pv168.backend.mission.MissionStatus;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -67,7 +68,15 @@ public class EditMissionDialog extends JDialog {
     private void onOK() {
         mission.setName(missionNameField.getText());
         mission.setRequiredRank(missionRequiredRankSlider.getValue());
-        //mission status set
+        if (notAssignedRadioButton.isSelected()) {
+            mission.setStatus(MissionStatus.NOT_ASSIGNED);
+        } else if (inProgressRadioButton.isSelected()) {
+            mission.setStatus(MissionStatus.IN_PROGRESS);
+        } else if (accomplishedRadioButton.isSelected()) {
+            mission.setStatus(MissionStatus.ACCOMPLISHED);
+        } else {
+            mission.setStatus(MissionStatus.FAILED);
+        }
 
         try {
             missionManager.updateMission(mission);
@@ -76,7 +85,7 @@ public class EditMissionDialog extends JDialog {
             JOptionPane.showMessageDialog(null, ex.getMessage() + " Please, correct it."); //TODO localize
             onOK();
         }
-        //TODO
+        //TODO check
     }
 
     private void onCancel() {
