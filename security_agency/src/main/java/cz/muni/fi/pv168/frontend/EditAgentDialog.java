@@ -5,7 +5,9 @@ import cz.muni.fi.pv168.backend.agent.AgentManager;
 import cz.muni.fi.pv168.backend.common.ValidationException;
 
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ResourceBundle;
 
 /**
@@ -48,7 +50,7 @@ public class EditAgentDialog extends JDialog {
         contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
                 JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
-        setTitle("Edit Agent Dialog"); //TODO localize
+        setTitle(bundle.getString("EditAgentDialog")); //TODO localize
         setLocationRelativeTo(this);
         agentNameField.setText(agent.getName());
         agentRankSlider.setValue(agent.getRank());
@@ -72,7 +74,8 @@ public class EditAgentDialog extends JDialog {
             agentManager.updateAgent(agent);
             dispose();
         } catch (ValidationException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage() + " Please, correct it."); //TODO localize
+            JOptionPane.showMessageDialog(null, bundle.getString(ex.getMessage()) + bundle.getString("Please, correct" +
+                    " it."), bundle.getString("Message"), 0); //TODO localize
             dispose();
             EditAgentDialog dialog = new EditAgentDialog(agentManager, agent, bundle);
             dialog.pack();

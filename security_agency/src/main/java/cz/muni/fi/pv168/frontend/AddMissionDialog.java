@@ -6,7 +6,9 @@ import cz.muni.fi.pv168.backend.mission.MissionManager;
 import cz.muni.fi.pv168.backend.mission.MissionStatus;
 
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ResourceBundle;
 
 /**
@@ -43,7 +45,7 @@ public class AddMissionDialog extends JDialog {
         contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
                 JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
-        setTitle("Add Mission dialog"); //TODO localize
+        setTitle(bundle.getString("AddMissionDialog")); //TODO localize
         setLocationRelativeTo(this);
     }
 
@@ -57,7 +59,8 @@ public class AddMissionDialog extends JDialog {
             missionManager.createMission(mission);
             dispose();
         } catch (ValidationException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage() + " Please, correct it."); //TODO localize
+            JOptionPane.showMessageDialog(null, bundle.getString(ex.getMessage()) + bundle.getString("Please, correct" +
+                    " it."), bundle.getString("Message"), 0); //TODO localize
             dispose();
             AddMissionDialog dialog = new AddMissionDialog(missionManager, bundle);
             dialog.pack();

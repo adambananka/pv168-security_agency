@@ -29,6 +29,7 @@ public class Main {
             //DataSource dataSource = DBUtils.createMemoryDatabase();
             DataSource dataSource = DBUtils.getDataSource();
             DBUtils.executeSqlScript(dataSource,AgencyManager.class.getResource("createTables.sql"));
+            DBUtils.executeSqlScript(dataSource, AgencyManager.class.getResource("testData.sql"));
             missionManager.setDataSource(dataSource);
             agentManager.setDataSource(dataSource);
             agencyManager.setDataSource(dataSource);
