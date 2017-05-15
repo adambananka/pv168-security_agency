@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ResourceBundleManager">
-    <file url="file://$PROJECT_DIR$/src/main/resources/cz/muni/fi/pv168/Bundle.properties" />
-    <file url="file://$PROJECT_DIR$/src/main/resources/cz/muni/fi/pv168/Bundle_cz.properties" />
-    <file url="file://$PROJECT_DIR$/src/main/resources/cz/muni/fi/pv168/Bundle_sk.properties" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/locale.properties" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/locale_cz.properties" />
     <custom-resource-bundle>
-      <file value="file://$PROJECT_DIR$/src/main/resources/cz/muni/fi/pv168/Bundle.properties" />
-      <file value="file://$PROJECT_DIR$/src/main/resources/cz/muni/fi/pv168/Bundle_cz.properties" />
-      <file value="file://$PROJECT_DIR$/src/main/resources/cz/muni/fi/pv168/Bundle_sk.properties" />
-      <base-name>Bundle</base-name>
+      <file value="file://$PROJECT_DIR$/src/main/resources/locale.properties" />
+      <file value="file://$PROJECT_DIR$/src/main/resources/locale_cz.properties" />
+      <file value="file://$PROJECT_DIR$/src/main/resources/locale_ru.properties" />
+      <file value="file://$PROJECT_DIR$/src/main/resources/locale_sk.properties" />
+      <base-name>locale</base-name>
     </custom-resource-bundle>
   </component>
 </project>

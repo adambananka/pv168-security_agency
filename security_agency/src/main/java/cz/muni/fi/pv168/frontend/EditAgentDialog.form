@@ -59,7 +59,7 @@
               </grid>
             </constraints>
             <properties>
-              <toolTipText resource-bundle="cz/muni/fi/pv168/frontend/locale" key="AgentNameTip"/>
+              <toolTipText resource-bundle="locale" key="AgentNameTip"/>
             </properties>
           </component>
           <component id="1ace0" class="javax.swing.JLabel">
