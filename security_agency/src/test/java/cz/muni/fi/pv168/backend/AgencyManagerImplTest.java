@@ -234,6 +234,10 @@ public class AgencyManagerImplTest {
         assertThat(manager.findAvailableAgents())
                 .usingFieldByFieldElementComparator()
                 .containsOnly(flash);
+
+        manager.assignAgent(flash, hardMission);
+        assertThat(manager.findAvailableAgents())
+                .isEmpty();
     }
 
     //--------------------------------------------------------------------------

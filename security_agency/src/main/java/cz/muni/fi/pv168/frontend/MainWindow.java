@@ -218,6 +218,7 @@ public class MainWindow {
         }
         agentAliveInfo.setText(agent.isAlive() ? bundle.getString("Alive") : bundle.getString("Dead")); //TODO localize
         agentRankInfo.setText(String.valueOf(agent.getRank()));
+        refreshMissionList();
     }
 
     private void onMissionSelection(Mission mission) {
