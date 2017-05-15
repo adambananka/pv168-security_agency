@@ -6,6 +6,7 @@ import cz.muni.fi.pv168.backend.common.ValidationException;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.ResourceBundle;
 
 /**
  * @author Adam Baňanka, Daniel Homola
@@ -21,15 +22,19 @@ public class EditAgentDialog extends JDialog {
 
     private AgentManager agentManager;
     private Agent agent;
+    private ResourceBundle bundle;
 
-    public EditAgentDialog(AgentManager manager, Agent agent) {
+    public EditAgentDialog(AgentManager manager, Agent agent, ResourceBundle bundle) {
         agentManager = manager;
         this.agent = agent;
+        this.bundle = bundle;
 
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
+        trueRadioButton.addActionListener(e -> onTrueRadioButton());
+        falseRadioButton.addActionListener(e -> onFalseRadioButton());
         buttonOK.addActionListener(e -> onOK());
         buttonCancel.addActionListener(e -> onCancel());
         // call onCancel() when cross is clicked
@@ -68,7 +73,10 @@ public class EditAgentDialog extends JDialog {
             dispose();
         } catch (ValidationException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage() + " Please, correct it."); //TODO localize
-            onOK();
+            dispose();
+            EditAgentDialog dialog = new EditAgentDialog(agentManager, agent, bundle);
+            dialog.pack();
+            dialog.setVisible(true);
         }
         //TODO check
     }
@@ -76,5 +84,15 @@ public class EditAgentDialog extends JDialog {
     private void onCancel() {
         // add your code here if necessary
         dispose();
+    }
+
+    private void onTrueRadioButton() {
+        trueRadioButton.setSelected(true);
+        falseRadioButton.setSelected(false);
+    }
+
+    private void onFalseRadioButton() {
+        trueRadioButton.setSelected(false);
+        falseRadioButton.setSelected(true);
     }
 }

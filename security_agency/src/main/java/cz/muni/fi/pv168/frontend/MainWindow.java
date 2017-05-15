@@ -10,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * @author Adam Baňanka, Daniel Homola
@@ -39,8 +41,14 @@ public class MainWindow {
     private MissionManager missionManager;
     private AgentManager agentManager;
     private AgencyManager agencyManager;
+    private ResourceBundle bundle;
 
-    public MainWindow() {
+    public MainWindow(MissionManager missionManager, AgentManager agentManager, AgencyManager agencyManager) {
+        this.missionManager = missionManager;
+        this.agentManager = agentManager;
+        this.agencyManager = agencyManager;
+        bundle = ResourceBundle.getBundle("locale", Locale.getDefault());
+
         JFrame frame = new JFrame();
         frame.setContentPane(ContentPane);
 
@@ -61,7 +69,8 @@ public class MainWindow {
 
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(800, 500));
-        frame.setTitle("Agency Manager"); //TODO localize
+        frame.setTitle(bundle.getString("AddAgentButton"));
+        //frame.setTitle("Agency Manager"); //TODO localize
         frame.setLocation(600, 300); //some relative location?
 
         test();
@@ -88,7 +97,7 @@ public class MainWindow {
     }
 
     private void onAddAgent() {
-        AddAgentDialog dialog = new AddAgentDialog(agentManager);
+        AddAgentDialog dialog = new AddAgentDialog(agentManager, bundle);
         dialog.pack();
         dialog.setVisible(true);
         refreshAgentList();
@@ -100,7 +109,7 @@ public class MainWindow {
             JOptionPane.showMessageDialog(null, "You need to choose some agent from the list first."); //TODO localize
             return;
         }
-        EditAgentDialog dialog = new EditAgentDialog(agentManager, (Agent) agentList.getSelectedValue());
+        EditAgentDialog dialog = new EditAgentDialog(agentManager, (Agent) agentList.getSelectedValue(), bundle);
         dialog.pack();
         dialog.setVisible(true);
         refreshAgentList();
@@ -119,7 +128,7 @@ public class MainWindow {
     }
 
     private void onAddMission() {
-        AddMissionDialog dialog = new AddMissionDialog(missionManager);
+        AddMissionDialog dialog = new AddMissionDialog(missionManager, bundle);
         dialog.pack();
         dialog.setVisible(true);
         refreshMissionList();
@@ -131,7 +140,7 @@ public class MainWindow {
             JOptionPane.showMessageDialog(null, "You need to choose some mission from the list first."); //TODO localize
             return;
         }
-        EditMissionDialog dialog = new EditMissionDialog(missionManager, (Mission) missionList.getSelectedValue());
+        EditMissionDialog dialog = new EditMissionDialog(missionManager, (Mission) missionList.getSelectedValue(), bundle);
         dialog.pack();
         dialog.setVisible(true);
         refreshMissionList();
@@ -163,34 +172,34 @@ public class MainWindow {
     }
 
     private void onAllAgentsShow() {
-        if (!allAgentsRadioButton.isSelected()) {
+        //if (!allAgentsRadioButton.isSelected()) {
             agentList.setListData(agentManager.findAllAgents().toArray());
-        }
+        //}
         allAgentsRadioButton.setSelected(true);
         availableAgentsRadioButton.setSelected(false);
     }
 
     private void onAvailableAgentsShow() {
-        if (!availableAgentsRadioButton.isSelected()) {
+        //if (!availableAgentsRadioButton.isSelected()) {
             agentList.setListData(agencyManager.findAvailableAgents().toArray());
-        }
+        //}
         availableAgentsRadioButton.setSelected(true);
         allAgentsRadioButton.setSelected(false);
     }
 
     private void onAllMissionsShow() {
-        if (!allMissionsRadioButton.isSelected()) {
+        //if (!allMissionsRadioButton.isSelected()) {
             missionList.setListData(missionManager.findAllMissions().toArray());
-        }
+        //}
         allMissionsRadioButton.setSelected(true);
         availableMissionsRadioButton.setSelected(false);
         agentsMissionsRadioButton.setSelected(false);
     }
 
     private void onAvailableMissionsShow() {
-        if (!availableMissionsRadioButton.isSelected()) {
+        //if (!availableMissionsRadioButton.isSelected()) {
             missionList.setListData(missionManager.findAvailableMissions().toArray());
-        }
+        //}
         allMissionsRadioButton.setSelected(false);
         availableMissionsRadioButton.setSelected(true);
         agentsMissionsRadioButton.setSelected(false);
@@ -202,9 +211,9 @@ public class MainWindow {
             agentsMissionsRadioButton.setSelected(false);
             return;
         }
-        if (!agentsMissionsRadioButton.isSelected()) {
+        //if (!agentsMissionsRadioButton.isSelected()) {
             missionList.setListData(agencyManager.findMissionsOfAgent((Agent) agentList.getSelectedValue()).toArray());
-        }
+        //}
         allMissionsRadioButton.setSelected(false);
         availableMissionsRadioButton.setSelected(false);
         agentsMissionsRadioButton.setSelected(true);
@@ -229,7 +238,9 @@ public class MainWindow {
         }
         missionStatusInfo.setText(String.valueOf(mission.getStatus()));//TODO localize
         missionRequiredRankInfo.setText(String.valueOf(mission.getRequiredRank()));
-        missionsAgentInfo.setText(agentManager.findAgent(mission.getAgentId()).getName());
+        if (mission.getAgentId() > 0L) {
+            missionsAgentInfo.setText(agentManager.findAgent(mission.getAgentId()).getName());
+        }
     }
 
     private void refreshAgentList() {

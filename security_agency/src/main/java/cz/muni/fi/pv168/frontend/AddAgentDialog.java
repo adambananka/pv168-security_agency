@@ -6,6 +6,7 @@ import cz.muni.fi.pv168.backend.common.ValidationException;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.ResourceBundle;
 
 /**
  * @author Adam Baňanka, Daniel Homola
@@ -18,9 +19,11 @@ public class AddAgentDialog extends JDialog {
     private JSlider agentRankSlider;
 
     private AgentManager agentManager;
+    private ResourceBundle bundle;
 
-    public AddAgentDialog(AgentManager manager) {
+    public AddAgentDialog(AgentManager manager, ResourceBundle bundle) {
         agentManager = manager;
+        this.bundle = bundle;
 
         setContentPane(contentPane);
         setModal(true);
@@ -54,7 +57,10 @@ public class AddAgentDialog extends JDialog {
             dispose();
         } catch (ValidationException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage() + " Please, correct it."); //TODO localize
-            onOK();
+            dispose();
+            AddAgentDialog dialog = new AddAgentDialog(agentManager, bundle);
+            dialog.pack();
+            dialog.setVisible(true);
         }
         //TODO check
     }

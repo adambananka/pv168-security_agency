@@ -7,6 +7,7 @@ import cz.muni.fi.pv168.backend.mission.MissionStatus;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.ResourceBundle;
 
 /**
  * @author Adam Baňanka, Daniel Homola
@@ -19,9 +20,11 @@ public class AddMissionDialog extends JDialog {
     private JSlider missionRequiredRankSlider;
 
     private MissionManager missionManager;
+    private ResourceBundle bundle;
 
-    public AddMissionDialog(MissionManager manager) {
+    public AddMissionDialog(MissionManager manager, ResourceBundle bundle) {
         missionManager = manager;
+        this.bundle = bundle;
 
         setContentPane(contentPane);
         setModal(true);
@@ -55,7 +58,10 @@ public class AddMissionDialog extends JDialog {
             dispose();
         } catch (ValidationException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage() + " Please, correct it."); //TODO localize
-            onOK();
+            dispose();
+            AddMissionDialog dialog = new AddMissionDialog(missionManager, bundle);
+            dialog.pack();
+            dialog.setVisible(true);
         }
         //TODO check
     }

@@ -7,6 +7,7 @@ import cz.muni.fi.pv168.backend.mission.MissionStatus;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.ResourceBundle;
 
 /**
  * @author Adam Baňanka, Daniel Homola
@@ -24,15 +25,21 @@ public class EditMissionDialog extends JDialog {
 
     private MissionManager missionManager;
     private Mission mission;
+    private ResourceBundle bundle;
 
-    public EditMissionDialog(MissionManager manager, Mission mission) {
+    public EditMissionDialog(MissionManager manager, Mission mission, ResourceBundle bundle) {
         missionManager = manager;
         this.mission = mission;
+        this.bundle = bundle;
 
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
+        notAssignedRadioButton.addActionListener(e -> onNotAssignedRadioButton());
+        inProgressRadioButton.addActionListener(e -> onInProgressRadioButton());
+        accomplishedRadioButton.addActionListener(e -> onAccomplishedRadioButton());
+        failedRadioButton.addActionListener(e -> onFailedRadioButton());
         buttonOK.addActionListener(e -> onOK());
         buttonCancel.addActionListener(e -> onCancel());
         // call onCancel() when cross is clicked
@@ -83,7 +90,10 @@ public class EditMissionDialog extends JDialog {
             dispose();
         } catch (ValidationException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage() + " Please, correct it."); //TODO localize
-            onOK();
+            dispose();
+            EditMissionDialog dialog = new EditMissionDialog(missionManager, mission, bundle);
+            dialog.pack();
+            dialog.setVisible(true);
         }
         //TODO check
     }
@@ -91,5 +101,33 @@ public class EditMissionDialog extends JDialog {
     private void onCancel() {
         // add your code here if necessary
         dispose();
+    }
+
+    private void onNotAssignedRadioButton() {
+        notAssignedRadioButton.setSelected(true);
+        inProgressRadioButton.setSelected(false);
+        accomplishedRadioButton.setSelected(false);
+        failedRadioButton.setSelected(false);
+    }
+
+    private void onInProgressRadioButton() {
+        notAssignedRadioButton.setSelected(false);
+        inProgressRadioButton.setSelected(true);
+        accomplishedRadioButton.setSelected(false);
+        failedRadioButton.setSelected(false);
+    }
+
+    private void onAccomplishedRadioButton() {
+        notAssignedRadioButton.setSelected(false);
+        inProgressRadioButton.setSelected(false);
+        accomplishedRadioButton.setSelected(true);
+        failedRadioButton.setSelected(false);
+    }
+
+    private void onFailedRadioButton() {
+        notAssignedRadioButton.setSelected(false);
+        inProgressRadioButton.setSelected(false);
+        accomplishedRadioButton.setSelected(false);
+        failedRadioButton.setSelected(true);
     }
 }

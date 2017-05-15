@@ -1,15 +1,21 @@
 package cz.muni.fi.pv168.backend.common;
 
+import cz.muni.fi.pv168.frontend.MainWindow;
+import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.derby.jdbc.EmbeddedDataSource;
+import org.apache.derby.jdbc.EmbeddedDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * @author Adam Baňanka, Daniel Homola
@@ -17,6 +23,36 @@ import java.sql.SQLException;
 public class DBUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(DBUtils.class);
+
+    public static DataSource getDataSource() throws SQLException {
+        Properties prop = new Properties();
+        try (InputStream input = MainWindow.class.getResourceAsStream("config.properties")){
+            prop.load(input);
+        } catch (IOException e) {
+            logger.error("error reading properties", e);
+        }
+        BasicDataSource ds = new BasicDataSource();
+        ds.setDriverClassName(EmbeddedDriver.class.getName());
+        ds.setUrl(prop.getProperty("url"));
+        ds.setUsername(prop.getProperty("user"));
+        ds.setPassword(prop.getProperty("password"));
+        return ds;
+    }
+
+    public static DataSource createMemoryDatabase() {
+        Properties prop = new Properties();
+        try (InputStream input = MainWindow.class.getResourceAsStream("config.properties")){
+            prop.load(input);
+        } catch (IOException e) {
+            logger.error("error reading properties", e);
+        }
+        EmbeddedDataSource ds = new EmbeddedDataSource();
+        ds.setCreateDatabase("create");
+        ds.setDatabaseName(prop.getProperty("name"));
+        ds.setUser(prop.getProperty("user"));
+        ds.setPassword(prop.getProperty("password"));
+        return ds;
+    }
 
     /**
      * Reads SQL statements from file. SQL commands in file must be separated by
