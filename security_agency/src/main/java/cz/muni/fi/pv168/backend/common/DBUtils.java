@@ -39,21 +39,6 @@ public class DBUtils {
         return ds;
     }
 
-    public static DataSource createMemoryDatabase() {
-        Properties prop = new Properties();
-        try (InputStream input = MainWindow.class.getResourceAsStream("config.properties")){
-            prop.load(input);
-        } catch (IOException e) {
-            logger.error("error reading properties", e);
-        }
-        EmbeddedDataSource ds = new EmbeddedDataSource();
-        ds.setCreateDatabase("create");
-        ds.setDatabaseName(prop.getProperty("name"));
-        ds.setUser(prop.getProperty("user"));
-        ds.setPassword(prop.getProperty("password"));
-        return ds;
-    }
-
     /**
      * Reads SQL statements from file. SQL commands in file must be separated by
      * a semicolon.

@@ -7,6 +7,8 @@ import cz.muni.fi.pv168.backend.common.IllegalEntityException;
 import cz.muni.fi.pv168.backend.common.ValidationException;
 import cz.muni.fi.pv168.backend.mission.Mission;
 import cz.muni.fi.pv168.backend.mission.MissionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,6 +41,7 @@ public class MainWindow {
     private JPanel ContentPane;
     private JLabel missionsAgentInfo;
 
+    private static final Logger logger = LoggerFactory.getLogger(MainWindow.class);
     private MissionManager missionManager;
     private AgentManager agentManager;
     private AgencyManager agencyManager;
@@ -71,7 +74,7 @@ public class MainWindow {
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(800, 500));
         frame.setTitle(bundle.getString("MainWindowTitle"));
-        frame.setLocation(600, 300); //some relative location?
+        frame.setLocation(600, 300);
         frame.pack();
         frame.setVisible(true);
 
@@ -83,105 +86,75 @@ public class MainWindow {
         new AddAgentDialog(agentManager, bundle);
 
         refreshAgentList();
-        //TODO check
     }
 
     private void onEditAgent() {
         if (agentList.isSelectionEmpty()) {
-            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessageAgent"), bundle.getString("Message"), 0);
+            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessageAgent"), bundle.getString("Message"), JOptionPane.ERROR_MESSAGE);
             return;
         }
         new EditAgentDialog(agentManager, (Agent) agentList.getSelectedValue(), bundle);
 
         refreshAgentList();
-        //TODO check
     }
 
     private void onDeleteAgent() {
         if (agentList.isSelectionEmpty()) {
-            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessageAgent"), bundle.getString("Message"), 0);
+            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessageAgent"), bundle.getString("Message"), JOptionPane.ERROR_MESSAGE);
             return;
         }
         new deleteAgentWorker((Agent) agentList.getSelectedValue()).execute();
-        //agentList.clearSelection();
-        //refreshAgentList();
-        //TODO check
     }
 
     private void onAddMission() {
         new AddMissionDialog(missionManager, bundle);
 
         refreshMissionList();
-        //TODO check
     }
 
     private void onEditMission() {
         if (missionList.isSelectionEmpty()) {
-            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessageMission"), bundle.getString("Message"), 0);
+            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessageMission"), bundle.getString("Message"), JOptionPane.ERROR_MESSAGE);
             return;
         }
-
         new EditMissionDialog(missionManager, (Mission) missionList.getSelectedValue(), bundle);
 
         refreshMissionList();
-        //TODO check
     }
 
     private void onDeleteMission() {
         if (missionList.isSelectionEmpty()) {
-            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessageMission"), bundle.getString("Message"), 0);
+            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessageMission"), bundle.getString("Message"), JOptionPane.ERROR_MESSAGE);
             return;
         }
         new deleteMissionWorker((Mission) missionList.getSelectedValue()).execute();
-        //missionList.clearSelection();
-        //refreshMissionList();
-        //TODO check
     }
 
     private void onAssignAgent() {
         if (agentList.isSelectionEmpty()) {
-            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessageAgent"), bundle.getString("Message"), 0);
+            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessageAgent"), bundle.getString("Message"), JOptionPane.ERROR_MESSAGE);
             return;
         }
         if (missionList.isSelectionEmpty()) {
-            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessageMission"), bundle.getString("Message"), 0);
+            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessageMission"), bundle.getString("Message"), JOptionPane.ERROR_MESSAGE);
             return;
         }
         new assignAgentWorker((Agent) agentList.getSelectedValue(), (Mission) missionList.getSelectedValue()).execute();
-        /*try {
-            agencyManager.assignAgent((Agent) agentList.getSelectedValue(), (Mission) missionList.getSelectedValue());
-        } catch (ValidationException | IllegalEntityException ex) {
-            JOptionPane.showMessageDialog(null, bundle.getString(ex.getMessage()) + bundle.getString("Please, correct" +
-                    " it."), bundle.getString("Message"), 0); //TODO localize
-        }
-        onAgentSelection((Agent) agentList.getSelectedValue());
-        onMissionSelection((Mission) missionList.getSelectedValue());
-        refreshAgentList();
-        refreshMissionList();*/
     }
 
     private void onAllAgentsShow() {
-        //if (!allAgentsRadioButton.isSelected()) {
-        //agentList.setListData(agentManager.findAllAgents().toArray());
-        //}
         new findAgentsWorker(0).execute();
         allAgentsRadioButton.setSelected(true);
         availableAgentsRadioButton.setSelected(false);
     }
 
     private void onAvailableAgentsShow() {
-        //if (!availableAgentsRadioButton.isSelected()) {
-        //agentList.setListData(agencyManager.findAvailableAgents().toArray());
-        //}
         new findAgentsWorker(1).execute();
         availableAgentsRadioButton.setSelected(true);
         allAgentsRadioButton.setSelected(false);
     }
 
     private void onAllMissionsShow() {
-        //if (!allMissionsRadioButton.isSelected()) {
-        //missionList.setListData(missionManager.findAllMissions().toArray());
-        //}
         new findMissionsWorker(0, null).execute();
         allMissionsRadioButton.setSelected(true);
         availableMissionsRadioButton.setSelected(false);
@@ -189,9 +162,6 @@ public class MainWindow {
     }
 
     private void onAvailableMissionsShow() {
-        //if (!availableMissionsRadioButton.isSelected()) {
-        //missionList.setListData(missionManager.findAvailableMissions().toArray());
-        //}
         new findMissionsWorker(1, null).execute();
         allMissionsRadioButton.setSelected(false);
         availableMissionsRadioButton.setSelected(true);
@@ -200,13 +170,11 @@ public class MainWindow {
 
     private void onAgentsMissionsShow() {
         if (agentList.isSelectionEmpty()) {
-            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessage"), bundle.getString("Message"), 0);
+            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessageAgent"), bundle.getString("Message"), JOptionPane.ERROR_MESSAGE);
             agentsMissionsRadioButton.setSelected(false);
             return;
         }
-        //if (!agentsMissionsRadioButton.isSelected()) {
-        //missionList.setListData(agencyManager.findMissionsOfAgent((Agent) agentList.getSelectedValue()).toArray());
-        //}
+
         new findMissionsWorker(2, (Agent) agentList.getSelectedValue()).execute();
         allMissionsRadioButton.setSelected(false);
         availableMissionsRadioButton.setSelected(false);
@@ -219,12 +187,12 @@ public class MainWindow {
             agentRankInfo.setText("");
             return;
         }
-        agentAliveInfo.setText(agent.isAlive() ? bundle.getString("Alive") : bundle.getString("Dead")); //TODO localize
+
+        agentAliveInfo.setText(agent.isAlive() ? bundle.getString("Alive") : bundle.getString("Dead"));
         agentRankInfo.setText(String.valueOf(agent.getRank()));
         if (agentsMissionsRadioButton.isSelected()) {
             new findMissionsWorker(2, (Agent) agentList.getSelectedValue()).execute();
         }
-        //refreshMissionList();
     }
 
     private void onMissionSelection(Mission mission) {
@@ -234,41 +202,35 @@ public class MainWindow {
             missionsAgentInfo.setText("");
             return;
         }
-        missionStatusInfo.setText(bundle.getString(String.valueOf(mission.getStatus())));//TODO localize
+
+        missionStatusInfo.setText(bundle.getString(String.valueOf(mission.getStatus())));
         missionRequiredRankInfo.setText(String.valueOf(mission.getRequiredRank()));
         if (mission.getAgentId() > 0L) {
-            //missionsAgentInfo.setText(agentManager.findAgent(mission.getAgentId()).getName());
             new findSingleAgentWorker(mission.getAgentId()).execute();
-        }
-        else {
+        } else {
             missionsAgentInfo.setText("");
         }
     }
 
     private void refreshAgentList() {
         if (availableAgentsRadioButton.isSelected()) {
-            //agentList.setListData(agencyManager.findAvailableAgents().toArray());
             new findAgentsWorker(1).execute();
             return;
         }
-        //agentList.setListData(agentManager.findAllAgents().toArray());
         new findAgentsWorker(0).execute();
     }
 
     private void refreshMissionList() {
         if (agentsMissionsRadioButton.isSelected()) {
             if (!agentList.isSelectionEmpty()) {
-                //missionList.setListData(agencyManager.findMissionsOfAgent((Agent) agentList.getSelectedValue()).toArray());
                 new findMissionsWorker(2, (Agent) agentList.getSelectedValue()).execute();
                 return;
             }
         }
         if (availableMissionsRadioButton.isSelected()) {
-            //missionList.setListData(missionManager.findAvailableMissions().toArray());
             new findMissionsWorker(1, null).execute();
             return;
         }
-        //missionList.setListData(missionManager.findAllMissions().toArray());
         new findMissionsWorker(0, null).execute();
     }
 
@@ -337,12 +299,10 @@ public class MainWindow {
                 Exception ex = get();
                 if (ex != null) {
                     JOptionPane.showMessageDialog(null, bundle.getString(ex.getMessage()) + bundle.getString("Please, correct" +
-                            " it."), bundle.getString("Message"), 0); //TODO localize
+                            " it."), bundle.getString("Message"), JOptionPane.ERROR_MESSAGE);
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            } catch (InterruptedException | ExecutionException e) {
+                logger.error("Worker get() error.", e);
             }
 
             onAgentSelection((Agent) agentList.getSelectedValue());
@@ -371,10 +331,8 @@ public class MainWindow {
                 if (res != null) {
                     missionsAgentInfo.setText(res.getName());
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            } catch (InterruptedException | ExecutionException e) {
+                logger.error("Worker get() error.", e);
             }
         }
     }
@@ -403,10 +361,8 @@ public class MainWindow {
             try {
                 List<Agent> res = get();
                 agentList.setListData(res.toArray());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            } catch (InterruptedException | ExecutionException e) {
+                logger.error("Worker get() error.", e);
             }
         }
     }
@@ -440,10 +396,8 @@ public class MainWindow {
             try {
                 List<Mission> res = get();
                 missionList.setListData(res.toArray());
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            } catch (InterruptedException | ExecutionException e) {
+                logger.error("Worker get() error.", e);
             }
         }
     }

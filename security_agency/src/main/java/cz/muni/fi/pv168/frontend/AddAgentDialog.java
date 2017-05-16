@@ -3,6 +3,7 @@ package cz.muni.fi.pv168.frontend;
 import cz.muni.fi.pv168.backend.agent.Agent;
 import cz.muni.fi.pv168.backend.agent.AgentManager;
 import cz.muni.fi.pv168.backend.common.ValidationException;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
@@ -34,18 +35,16 @@ public class AddAgentDialog extends JDialog {
 
         buttonOK.addActionListener(e -> onOK());
         buttonCancel.addActionListener(e -> onCancel());
-        // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 onCancel();
             }
         });
-        // call onCancel() on ESCAPE
         contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
                 JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
 
-        setTitle(bundle.getString("AddAgentDialog")); //TODO localize
+        setTitle(bundle.getString("AddAgentDialog"));
         setLocationRelativeTo(this);
 
         pack();
@@ -59,20 +58,9 @@ public class AddAgentDialog extends JDialog {
         agent.setRank(agentRankSlider.getValue());
 
         new AddAgentWorker(agent).execute();
-        /*try {
-            agentManager.createAgent(agent);
-            dispose();
-        } catch (ValidationException ex) {
-            JOptionPane.showMessageDialog(null, bundle.getString(ex.getMessage()) + bundle.getString("Please, correct" +
-                    " it."), bundle.getString("Message"), 0); //TODO localize
-            dispose();
-            new AddAgentDialog(agentManager, bundle);
-        }*/
-        //TODO check
     }
 
     private void onCancel() {
-        // add your code here if necessary
         dispose();
     }
 
@@ -100,13 +88,11 @@ public class AddAgentDialog extends JDialog {
                 Exception ex = get();
                 if (ex != null) {
                     JOptionPane.showMessageDialog(null, bundle.getString(ex.getMessage()) + bundle.getString("Please, correct" +
-                            " it."), bundle.getString("Message"), 0); //TODO localize
+                            " it."), bundle.getString("Message"), JOptionPane.ERROR_MESSAGE);
                     new AddAgentDialog(agentManager, bundle);
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            } catch (InterruptedException | ExecutionException e) {
+                LoggerFactory.getLogger(AddAgentDialog.class).error("Worker get() error.", e);
             }
         }
     }

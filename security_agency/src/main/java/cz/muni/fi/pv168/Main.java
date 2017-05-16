@@ -26,7 +26,6 @@ public class Main {
         AgencyManagerImpl agencyManager = new AgencyManagerImpl();
 
         try {
-            //DataSource dataSource = DBUtils.createMemoryDatabase();
             DataSource dataSource = DBUtils.getDataSource();
             DBUtils.executeSqlScript(dataSource,AgencyManager.class.getResource("createTables.sql"));
             DBUtils.executeSqlScript(dataSource, AgencyManager.class.getResource("testData.sql"));
@@ -40,7 +39,7 @@ public class Main {
         }
 
         EventQueue.invokeLater(() -> {
-            MainWindow app = new MainWindow(missionManager, agentManager, agencyManager);
+            new MainWindow(missionManager, agentManager, agencyManager);
         });
     }
 }
