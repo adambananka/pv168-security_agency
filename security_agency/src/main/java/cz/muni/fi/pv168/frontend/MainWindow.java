@@ -88,7 +88,7 @@ public class MainWindow {
 
     private void onEditAgent() {
         if (agentList.isSelectionEmpty()) {
-            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessage"), bundle.getString("Message"), 0);
+            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessageAgent"), bundle.getString("Message"), 0);
             return;
         }
         new EditAgentDialog(agentManager, (Agent) agentList.getSelectedValue(), bundle);
@@ -99,7 +99,7 @@ public class MainWindow {
 
     private void onDeleteAgent() {
         if (agentList.isSelectionEmpty()) {
-            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessage"), bundle.getString("Message"), 0);
+            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessageAgent"), bundle.getString("Message"), 0);
             return;
         }
         new deleteAgentWorker((Agent) agentList.getSelectedValue()).execute();
@@ -117,7 +117,7 @@ public class MainWindow {
 
     private void onEditMission() {
         if (missionList.isSelectionEmpty()) {
-            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessage"), bundle.getString("Message"), 0);
+            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessageMission"), bundle.getString("Message"), 0);
             return;
         }
 
@@ -129,7 +129,7 @@ public class MainWindow {
 
     private void onDeleteMission() {
         if (missionList.isSelectionEmpty()) {
-            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessage"), bundle.getString("Message"), 0);
+            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessageMission"), bundle.getString("Message"), 0);
             return;
         }
         new deleteMissionWorker((Mission) missionList.getSelectedValue()).execute();
@@ -140,11 +140,11 @@ public class MainWindow {
 
     private void onAssignAgent() {
         if (agentList.isSelectionEmpty()) {
-            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessage"), bundle.getString("Message"), 0);
+            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessageAgent"), bundle.getString("Message"), 0);
             return;
         }
         if (missionList.isSelectionEmpty()) {
-            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessage"), bundle.getString("Message"), 0);
+            JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessageMission"), bundle.getString("Message"), 0);
             return;
         }
         new assignAgentWorker((Agent) agentList.getSelectedValue(), (Mission) missionList.getSelectedValue()).execute();
@@ -221,7 +221,10 @@ public class MainWindow {
         }
         agentAliveInfo.setText(agent.isAlive() ? bundle.getString("Alive") : bundle.getString("Dead")); //TODO localize
         agentRankInfo.setText(String.valueOf(agent.getRank()));
-        refreshMissionList();
+        if (agentsMissionsRadioButton.isSelected()) {
+            new findMissionsWorker(2, (Agent) agentList.getSelectedValue()).execute();
+        }
+        //refreshMissionList();
     }
 
     private void onMissionSelection(Mission mission) {
@@ -365,7 +368,9 @@ public class MainWindow {
         protected void done() {
             try {
                 Agent res = get();
-                missionsAgentInfo.setText(res.getName());
+                if (res != null) {
+                    missionsAgentInfo.setText(res.getName());
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
