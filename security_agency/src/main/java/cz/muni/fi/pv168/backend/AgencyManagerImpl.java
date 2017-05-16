@@ -87,16 +87,12 @@ public class AgencyManagerImpl implements AgencyManager {
     public List<Agent> findAvailableAgents() {
         checkDataSource();
         try (Connection conn = dataSource.getConnection()) {
-            try (PreparedStatement st = conn.prepareStatement("SELECT Agent.id, Agent.name, rank, alive " +
+            try (PreparedStatement st = conn.prepareStatement("SELECT * FROM Agent EXCEPT " +
+                    "SELECT Agent.id, Agent.name, rank, alive " +
                     "FROM Agent LEFT JOIN Mission ON Agent.id = Mission.agentId " +
-                    "WHERE Agent.alive = ? AND Mission.status IS NULL OR Mission.status IN (?, ?)")) {
-                    //"FROM  ( SELECT * FROM Mission WHERE status = ? ) RIGHT JOIN Agent ON Agent.id = Mission.agentId " +
-                    //"WHERE Agent.alive = ? AND Mission.status IS NULL")) {
-                st.setBoolean(1, true);
-                st.setString(2, MissionStatus.ACCOMPLISHED.toString());
-                st.setString(3, MissionStatus.FAILED.toString());
-                //st.setString(1, MissionStatus.IN_PROGRESS.toString());
-                //st.setBoolean(2, true);
+                    "WHERE Agent.alive = ? OR Mission.status = ?")) {
+                st.setBoolean(1, false);
+                st.setString(2, MissionStatus.IN_PROGRESS.toString());
                 return AgentManagerImpl.executeQueryForMultipleAgents(st);
             }
         } catch (SQLException ex) {

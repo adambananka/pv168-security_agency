@@ -36,8 +36,8 @@ public class Main {
         } catch (SQLException e) {
             String msg  = "Error when setting data source";
             logger.error(msg, e);
+            return;
         }
-
 
         EventQueue.invokeLater(() -> {
             MainWindow app = new MainWindow(missionManager, agentManager, agencyManager);

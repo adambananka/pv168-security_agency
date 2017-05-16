@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author Adam Baňanka, Daniel Homola
@@ -47,6 +48,9 @@ public class AddMissionDialog extends JDialog {
 
         setTitle(bundle.getString("AddMissionDialog")); //TODO localize
         setLocationRelativeTo(this);
+
+        pack();
+        setVisible(true);
     }
 
     private void onOK() {
@@ -55,22 +59,56 @@ public class AddMissionDialog extends JDialog {
         mission.setName(missionNameField.getText());
         mission.setRequiredRank(missionRequiredRankSlider.getValue());
 
-        try {
+        new AddMissionWorker(mission).execute();
+        /*try {
             missionManager.createMission(mission);
             dispose();
         } catch (ValidationException ex) {
             JOptionPane.showMessageDialog(null, bundle.getString(ex.getMessage()) + bundle.getString("Please, correct" +
                     " it."), bundle.getString("Message"), 0); //TODO localize
             dispose();
-            AddMissionDialog dialog = new AddMissionDialog(missionManager, bundle);
-            dialog.pack();
-            dialog.setVisible(true);
-        }
+            new AddMissionDialog(missionManager, bundle);
+        }*/
         //TODO check
     }
 
     private void onCancel() {
         // add your code here if necessary
         dispose();
+    }
+
+    public class AddMissionWorker extends SwingWorker<Exception, Void> {
+        private Mission mission;
+
+        public AddMissionWorker(Mission mission) {
+            this.mission = mission;
+        }
+
+        @Override
+        protected Exception doInBackground() throws Exception {
+            try {
+                missionManager.createMission(mission);
+            } catch (ValidationException ex) {
+                return ex;
+            }
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            dispose();
+            try {
+                Exception ex = get();
+                if (ex != null) {
+                    JOptionPane.showMessageDialog(null, bundle.getString(ex.getMessage()) + bundle.getString("Please, correct" +
+                            " it."), bundle.getString("Message"), 0); //TODO localize
+                    new AddMissionDialog(missionManager, bundle);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

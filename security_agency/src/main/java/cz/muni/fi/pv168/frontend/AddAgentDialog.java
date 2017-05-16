@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author Adam Baňanka, Daniel Homola
@@ -46,6 +47,9 @@ public class AddAgentDialog extends JDialog {
 
         setTitle(bundle.getString("AddAgentDialog")); //TODO localize
         setLocationRelativeTo(this);
+
+        pack();
+        setVisible(true);
     }
 
     private void onOK() {
@@ -54,22 +58,56 @@ public class AddAgentDialog extends JDialog {
         agent.setAlive(true);
         agent.setRank(agentRankSlider.getValue());
 
-        try {
+        new AddAgentWorker(agent).execute();
+        /*try {
             agentManager.createAgent(agent);
             dispose();
         } catch (ValidationException ex) {
             JOptionPane.showMessageDialog(null, bundle.getString(ex.getMessage()) + bundle.getString("Please, correct" +
                     " it."), bundle.getString("Message"), 0); //TODO localize
             dispose();
-            AddAgentDialog dialog = new AddAgentDialog(agentManager, bundle);
-            dialog.pack();
-            dialog.setVisible(true);
-        }
+            new AddAgentDialog(agentManager, bundle);
+        }*/
         //TODO check
     }
 
     private void onCancel() {
         // add your code here if necessary
         dispose();
+    }
+
+    public class AddAgentWorker extends SwingWorker<Exception, Void> {
+        private Agent agent;
+
+        public AddAgentWorker(Agent agent) {
+            this.agent = agent;
+        }
+
+        @Override
+        protected Exception doInBackground() throws Exception {
+            try {
+                agentManager.createAgent(agent);
+            } catch (ValidationException ex) {
+                return ex;
+            }
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            dispose();
+            try {
+                Exception ex = get();
+                if (ex != null) {
+                    JOptionPane.showMessageDialog(null, bundle.getString(ex.getMessage()) + bundle.getString("Please, correct" +
+                            " it."), bundle.getString("Message"), 0); //TODO localize
+                    new AddAgentDialog(agentManager, bundle);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

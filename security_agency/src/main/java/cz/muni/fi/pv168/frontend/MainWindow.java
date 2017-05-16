@@ -10,8 +10,9 @@ import cz.muni.fi.pv168.backend.mission.MissionManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author Adam Baňanka, Daniel Homola
@@ -79,9 +80,8 @@ public class MainWindow {
     }
 
     private void onAddAgent() {
-        AddAgentDialog dialog = new AddAgentDialog(agentManager, bundle);
-        dialog.pack();
-        dialog.setVisible(true);
+        new AddAgentDialog(agentManager, bundle);
+
         refreshAgentList();
         //TODO check
     }
@@ -91,9 +91,8 @@ public class MainWindow {
             JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessage"), bundle.getString("Message"), 0);
             return;
         }
-        EditAgentDialog dialog = new EditAgentDialog(agentManager, (Agent) agentList.getSelectedValue(), bundle);
-        dialog.pack();
-        dialog.setVisible(true);
+        new EditAgentDialog(agentManager, (Agent) agentList.getSelectedValue(), bundle);
+
         refreshAgentList();
         //TODO check
     }
@@ -103,16 +102,15 @@ public class MainWindow {
             JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessage"), bundle.getString("Message"), 0);
             return;
         }
-        agentManager.deleteAgent((Agent) agentList.getSelectedValue());
-        agentList.clearSelection();
-        refreshAgentList();
+        new deleteAgentWorker((Agent) agentList.getSelectedValue()).execute();
+        //agentList.clearSelection();
+        //refreshAgentList();
         //TODO check
     }
 
     private void onAddMission() {
-        AddMissionDialog dialog = new AddMissionDialog(missionManager, bundle);
-        dialog.pack();
-        dialog.setVisible(true);
+        new AddMissionDialog(missionManager, bundle);
+
         refreshMissionList();
         //TODO check
     }
@@ -122,10 +120,9 @@ public class MainWindow {
             JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessage"), bundle.getString("Message"), 0);
             return;
         }
-        EditMissionDialog dialog = new EditMissionDialog(missionManager, (Mission) missionList.getSelectedValue(),
-                bundle);
-        dialog.pack();
-        dialog.setVisible(true);
+
+        new EditMissionDialog(missionManager, (Mission) missionList.getSelectedValue(), bundle);
+
         refreshMissionList();
         //TODO check
     }
@@ -135,9 +132,9 @@ public class MainWindow {
             JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessage"), bundle.getString("Message"), 0);
             return;
         }
-        missionManager.deleteMission((Mission) missionList.getSelectedValue());
-        missionList.clearSelection();
-        refreshMissionList();
+        new deleteMissionWorker((Mission) missionList.getSelectedValue()).execute();
+        //missionList.clearSelection();
+        //refreshMissionList();
         //TODO check
     }
 
@@ -150,7 +147,8 @@ public class MainWindow {
             JOptionPane.showMessageDialog(null, bundle.getString("ErrorMessage"), bundle.getString("Message"), 0);
             return;
         }
-        try {
+        new assignAgentWorker((Agent) agentList.getSelectedValue(), (Mission) missionList.getSelectedValue()).execute();
+        /*try {
             agencyManager.assignAgent((Agent) agentList.getSelectedValue(), (Mission) missionList.getSelectedValue());
         } catch (ValidationException | IllegalEntityException ex) {
             JOptionPane.showMessageDialog(null, bundle.getString(ex.getMessage()) + bundle.getString("Please, correct" +
@@ -159,29 +157,32 @@ public class MainWindow {
         onAgentSelection((Agent) agentList.getSelectedValue());
         onMissionSelection((Mission) missionList.getSelectedValue());
         refreshAgentList();
-        refreshMissionList();
+        refreshMissionList();*/
     }
 
     private void onAllAgentsShow() {
         //if (!allAgentsRadioButton.isSelected()) {
-        agentList.setListData(agentManager.findAllAgents().toArray());
+        //agentList.setListData(agentManager.findAllAgents().toArray());
         //}
+        new findAgentsWorker(0).execute();
         allAgentsRadioButton.setSelected(true);
         availableAgentsRadioButton.setSelected(false);
     }
 
     private void onAvailableAgentsShow() {
         //if (!availableAgentsRadioButton.isSelected()) {
-        agentList.setListData(agencyManager.findAvailableAgents().toArray());
+        //agentList.setListData(agencyManager.findAvailableAgents().toArray());
         //}
+        new findAgentsWorker(1).execute();
         availableAgentsRadioButton.setSelected(true);
         allAgentsRadioButton.setSelected(false);
     }
 
     private void onAllMissionsShow() {
         //if (!allMissionsRadioButton.isSelected()) {
-        missionList.setListData(missionManager.findAllMissions().toArray());
+        //missionList.setListData(missionManager.findAllMissions().toArray());
         //}
+        new findMissionsWorker(0, null).execute();
         allMissionsRadioButton.setSelected(true);
         availableMissionsRadioButton.setSelected(false);
         agentsMissionsRadioButton.setSelected(false);
@@ -189,8 +190,9 @@ public class MainWindow {
 
     private void onAvailableMissionsShow() {
         //if (!availableMissionsRadioButton.isSelected()) {
-        missionList.setListData(missionManager.findAvailableMissions().toArray());
+        //missionList.setListData(missionManager.findAvailableMissions().toArray());
         //}
+        new findMissionsWorker(1, null).execute();
         allMissionsRadioButton.setSelected(false);
         availableMissionsRadioButton.setSelected(true);
         agentsMissionsRadioButton.setSelected(false);
@@ -203,8 +205,9 @@ public class MainWindow {
             return;
         }
         //if (!agentsMissionsRadioButton.isSelected()) {
-        missionList.setListData(agencyManager.findMissionsOfAgent((Agent) agentList.getSelectedValue()).toArray());
+        //missionList.setListData(agencyManager.findMissionsOfAgent((Agent) agentList.getSelectedValue()).toArray());
         //}
+        new findMissionsWorker(2, (Agent) agentList.getSelectedValue()).execute();
         allMissionsRadioButton.setSelected(false);
         availableMissionsRadioButton.setSelected(false);
         agentsMissionsRadioButton.setSelected(true);
@@ -231,7 +234,8 @@ public class MainWindow {
         missionStatusInfo.setText(bundle.getString(String.valueOf(mission.getStatus())));//TODO localize
         missionRequiredRankInfo.setText(String.valueOf(mission.getRequiredRank()));
         if (mission.getAgentId() > 0L) {
-            missionsAgentInfo.setText(agentManager.findAgent(mission.getAgentId()).getName());
+            //missionsAgentInfo.setText(agentManager.findAgent(mission.getAgentId()).getName());
+            new findSingleAgentWorker(mission.getAgentId()).execute();
         }
         else {
             missionsAgentInfo.setText("");
@@ -240,24 +244,202 @@ public class MainWindow {
 
     private void refreshAgentList() {
         if (availableAgentsRadioButton.isSelected()) {
-            agentList.setListData(agencyManager.findAvailableAgents().toArray());
+            //agentList.setListData(agencyManager.findAvailableAgents().toArray());
+            new findAgentsWorker(1).execute();
             return;
         }
-        agentList.setListData(agentManager.findAllAgents().toArray());
+        //agentList.setListData(agentManager.findAllAgents().toArray());
+        new findAgentsWorker(0).execute();
     }
 
     private void refreshMissionList() {
         if (agentsMissionsRadioButton.isSelected()) {
             if (!agentList.isSelectionEmpty()) {
-                missionList.setListData(agencyManager.findMissionsOfAgent((Agent) agentList.getSelectedValue())
-                        .toArray());
+                //missionList.setListData(agencyManager.findMissionsOfAgent((Agent) agentList.getSelectedValue()).toArray());
+                new findMissionsWorker(2, (Agent) agentList.getSelectedValue()).execute();
                 return;
             }
         }
         if (availableMissionsRadioButton.isSelected()) {
-            missionList.setListData(missionManager.findAvailableMissions().toArray());
+            //missionList.setListData(missionManager.findAvailableMissions().toArray());
+            new findMissionsWorker(1, null).execute();
             return;
         }
-        missionList.setListData(missionManager.findAllMissions().toArray());
+        //missionList.setListData(missionManager.findAllMissions().toArray());
+        new findMissionsWorker(0, null).execute();
+    }
+
+    public class deleteAgentWorker extends SwingWorker<Void, Void> {
+        private Agent agent;
+
+        public deleteAgentWorker(Agent agent) {
+            this.agent = agent;
+        }
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            agentManager.deleteAgent(agent);
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            agentList.clearSelection();
+            refreshAgentList();
+        }
+    }
+
+    public class deleteMissionWorker extends SwingWorker<Void, Void> {
+        private Mission mission;
+
+        public deleteMissionWorker(Mission mission) {
+            this.mission = mission;
+        }
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            missionManager.deleteMission(mission);
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            missionList.clearSelection();
+            refreshMissionList();
+        }
+    }
+
+    public class assignAgentWorker extends SwingWorker<Exception, Void> {
+        private Agent agent;
+        private Mission mission;
+
+        public assignAgentWorker(Agent agent, Mission mission) {
+            this.agent = agent;
+            this.mission = mission;
+        }
+
+        @Override
+        protected Exception doInBackground() throws Exception {
+            try {
+                agencyManager.assignAgent(agent, mission);
+            } catch (ValidationException | IllegalEntityException ex) {
+                return ex;
+            }
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            try {
+                Exception ex = get();
+                if (ex != null) {
+                    JOptionPane.showMessageDialog(null, bundle.getString(ex.getMessage()) + bundle.getString("Please, correct" +
+                            " it."), bundle.getString("Message"), 0); //TODO localize
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+
+            onAgentSelection((Agent) agentList.getSelectedValue());
+            onMissionSelection((Mission) missionList.getSelectedValue());
+            refreshAgentList();
+            refreshMissionList();
+        }
+    }
+
+    public class findSingleAgentWorker extends SwingWorker<Agent, Void> {
+        private Long id;
+
+        public findSingleAgentWorker(Long id) {
+            this.id = id;
+        }
+
+        @Override
+        protected Agent doInBackground() throws Exception {
+            return agentManager.findAgent(id);
+        }
+
+        @Override
+        protected void done() {
+            try {
+                Agent res = get();
+                missionsAgentInfo.setText(res.getName());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public class findAgentsWorker extends SwingWorker<List<Agent>, Void> {
+        //0 = all, 1 = available
+        private int selection;
+
+        public findAgentsWorker(int selection) {
+            this.selection = selection;
+        }
+
+        @Override
+        protected List<Agent> doInBackground() throws Exception {
+            switch (selection) {
+                case 0:
+                    return agentManager.findAllAgents();
+                case 1:
+                    return agencyManager.findAvailableAgents();
+            }
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            try {
+                List<Agent> res = get();
+                agentList.setListData(res.toArray());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public class findMissionsWorker extends SwingWorker<List<Mission>, Void> {
+        //0 = all, 1 = available, 2 = agent's
+        private int selection;
+        //set only if selection == 2, otherwise null and not used
+        private Agent agent;
+
+        public findMissionsWorker(int selection, Agent agent) {
+            this.selection = selection;
+            this.agent = agent;
+        }
+
+        @Override
+        protected List<Mission> doInBackground() throws Exception {
+            switch (selection) {
+                case 0:
+                    return missionManager.findAllMissions();
+                case 1:
+                    return missionManager.findAvailableMissions();
+                case 2:
+                    return agencyManager.findMissionsOfAgent(agent);
+            }
+            return null;
+        }
+
+        @Override
+        protected void done() {
+            try {
+                List<Mission> res = get();
+                missionList.setListData(res.toArray());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
